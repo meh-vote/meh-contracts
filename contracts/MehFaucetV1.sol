@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract MehFaucetV1 is ReentrancyGuard, Ownable {
     IERC20 public immutable mehToken;
 
-    uint256 public constant MIN_TOKEN_AMOUNT = 700 * 10**18;
-    uint256 public constant MAX_TOKEN_AMOUNT = 1100 * 10**18;
+    uint256 public constant MIN_TOKEN_AMOUNT = 12000 * 10**18;
+    uint256 public constant MAX_TOKEN_AMOUNT = 24000 * 10**18;
     uint256 public constant TIME_INTERVAL = 1 days;
 
     mapping(address => uint256) public lastAccessTime;
