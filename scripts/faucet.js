@@ -4,6 +4,7 @@ const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_FAUCET = process.env.MEH_FAUCET;
 
+//npx hardhat run scripts/faucet.js --network base
 async function main() {
     const Meh = await ethers.getContractFactory("Meh");
     const meh = await Meh.attach(MEH_TOKEN);
@@ -17,11 +18,11 @@ async function main() {
     // await meh.mint(MEH_FAUCET, "50000000000000000000000000"); // 50M
     // console.log("mint done");
 
-    // await mehFaucet.toggleFaucet();
-    // console.log("faucet toggled");
+    await mehFaucet.toggleFaucet();
+    console.log("faucet toggled");
 
-    await mehFaucet.faucet();
-    console.log("faucet");
+    // await mehFaucet.faucet();
+    // console.log("faucet");
 
 }
 

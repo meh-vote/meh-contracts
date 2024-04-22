@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 
 const MEH_TOKEN = process.env.MEH_TOKEN;
 
-//npx hardhat run scripts/deploy.js --network basesepolia
+//npx hardhat run scripts/deploy.js --network base
 async function main() {
   const [deployer] = await ethers.getSigners();
 
@@ -18,11 +18,11 @@ async function main() {
   // const meh = await Meh.deploy();
   // console.log("meh deployed to address:", meh.address);
 
-const MehFaucet = await ethers.getContractFactory("MehFaucetV1");
-const mehFaucet = await MehFaucet.deploy(
-    MEH_TOKEN
-);
-console.log("mehFaucet deployed to address:", mehFaucet.address);
+    const MehAirdrop = await ethers.getContractFactory("MehAirdropV1");
+    const mehAirdrop = await MehAirdrop.deploy(
+        MEH_TOKEN
+    );
+    console.log("mehAirdrop deployed to address:", mehAirdrop.address);
 
 }
 

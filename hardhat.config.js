@@ -23,7 +23,7 @@ module.exports = {
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
       gas: "auto",
-      gasMultiplier: 1.1
+      gasMultiplier: 1.1,
     },
     basesepolia: {
       url: API_URL,
@@ -33,7 +33,19 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: "TJGFDFSCM8PZMMHSFFMUY8BW4T3U8CJSH2"
+    apiKey: {
+      base: "1EE4Q45Y7PT97X1AR321WIUW6U9WZEMSUW"
+    },
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://mainnet.base.org",
+          browserURL: "https://basescan.org"
+        }
+      }
+    ]
   }
 };
 
