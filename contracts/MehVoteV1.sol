@@ -119,7 +119,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         product.mehDeposited += amt;
         if (product.mehDeposited == product.mehNeeded) {
             product.mehStore = true;
-            string memory merkleRoot = "abc123"; //TODO generate
+            string memory merkleRoot = "def-001";
 
             emit MehStore(
                 _productId,
