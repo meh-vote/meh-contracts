@@ -3,7 +3,7 @@ const {fs} = require('file-system');
 const ETH_MULTIPLIER = 1000000000000000000;
 
 const MEH_AIRDROP = process.env.MEH_AIRDROP;
-const MEH_TO_DROP = 1000000000000000000000;
+
 
 async function main() {
     const MehAirdrop = await ethers.getContractFactory("MehAirdropV1");
