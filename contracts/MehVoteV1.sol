@@ -21,8 +21,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 id;
         uint256 begin;
         uint256 end;
-        mapping(uint256 => Product) products; // Nested mapping to hold products directly
-        uint256 numProducts; // To keep track of the number of products
+        mapping(uint256 => Product) products;
+        uint256 numProducts;
     }
 
     struct Product {
@@ -30,58 +30,65 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 mehDeposited;
         uint256 mehNeeded;
         uint256 prizeMeh;
-        bool isWinner;
+        uint256 limitedRun;
+        bool mehStore;
     }
 
     mapping(uint256 => Game) public games;
-    mapping(address => mapping(uint256 => uint256)) public userDeposits;
+    mapping(address => mapping(uint256 => uint256)) public deposits;
 
     constructor(IERC20Burnable _mehToken) {
         mehToken = _mehToken;
     }
 
-    // Owner function to create a game
-    function createGame(uint256 begin, uint256 end) external onlyOwner {
+    function createGame(
+        uint256 _begin,
+        uint256 _end
+    ) external onlyOwner {
         uint256 gameId = gameIdCounter.current();
         Game storage game = games[gameId];
         game.id = gameId;
-        game.begin = begin;
-        game.end = end;
+        game.begin = _begin;
+        game.end = _end;
         gameIdCounter.increment();
     }
 
     // Owner function to add a product to a game
     function addProductToGame(
-        uint256 gameId,
-        uint256 prizeMeh,
-        uint256 mehNeeded
+        uint256 _gameId,
+        uint256 _prizeMeh,
+        uint256 _mehNeeded,
+        uint256 _limitedRun
     ) external onlyOwner {
-        Game storage game = games[gameId];
-        require(game.id != 0, "Game does not exist");
+        Game storage game = games[_gameId];
+        require(game.id != 0, "game does not exist");
 
         uint256 productId = productIdCounter.current();
         game.products[productId] = Product({
             id: productId,
             mehDeposited: 0,
-            prizeMeh: prizeMeh,
-            mehNeeded: mehNeeded,
-            isWinner: false
+            prizeMeh: _prizeMeh,
+            mehNeeded: _mehNeeded,
+            mehStore: false,
+            limitedRun: _limitedRun
         });
 
-        // Increment counters for product ID and number of products in the game
         productIdCounter.increment();
         game.numProducts++;
     }
 
-    function depositMeh(uint256 gameId, uint256 productId, uint256 amt) external {
-        // Access the specific game and product from the nested mapping
-        Game storage game = games[gameId];
-        Product storage product = game.products[productId];
+    function depositMeh(
+        uint256 _gameId,
+        uint256 _productId,
+        uint256 _amt
+    ) external {
+        Game storage game = games[_gameId];
+        Product storage product = game.products[_productId];
 
-        // Check for a valid product in the game
         require(product.id != 0, "product does not exist");
-        require(!product.isWinner, "product not funded");
+        require(!product.mehStore, "product already in meh.store");
 
+        uint256 amt = _amt;
         if(product.mehDeposited + amt > product.mehNeeded) {
             amt = product.mehNeeded - product.mehDeposited;
         }
@@ -89,67 +96,60 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         mehToken.transferFrom(msg.sender, address(this), amt);
         product.mehDeposited += amt;
         if (product.mehDeposited == product.mehNeeded) {
-            product.isWinner = true;
+            product.mehStore = true;
         }
 
-        userDeposits[msg.sender][productId] += amt;
+        deposits[msg.sender][_productId] += amt;
     }
 
-    // Function for owner to extract Meh from the contract
-    function extractMeh(uint256 amount) external onlyOwner {
-        mehToken.transfer(owner(), amount);
+    function depositMehStore(uint256 _amount) external onlyOwner {
+        mehToken.transfer(owner(), _amount);
     }
 
-    function depositPrizeMeh(uint256 gameId, uint256 productId, uint256 amount) external onlyOwner {
-        Game storage game = games[gameId];
-        Product storage product = game.products[productId];
+    function depositPrizeMeh(
+        uint256 _gameId,
+        uint256 _productId,
+        uint256 _amount
+    ) external onlyOwner {
+        Game storage game = games[_gameId];
+        Product storage product = game.products[_productId];
 
         require(product.id != 0, "product does not exist");
-        product.prizeMeh += amount;
+        product.prizeMeh += _amount;
 
-        mehToken.transferFrom(msg.sender, address(this), amount);
+        mehToken.transferFrom(msg.sender, address(this), _amount);
     }
 
-    // OnlyOwner function to update product win status
-    function updateProductWinStatus(uint256 gameId, uint256 productId, bool isWinner) external onlyOwner {
-        Game storage game = games[gameId];
-        Product storage product = game.products[productId];
+    function burnLoserMeh(
+        uint256 _gameId,
+        uint256 _productId
+    ) external onlyOwner {
+        Game storage game = games[_gameId];
+        Product storage product = game.products[_productId];
+        require(!product.mehStore, "product in store");
 
-        if (isWinner) {
-            product.isWinner = true;
-        } else {
-            product.isWinner = false;
-            // Directly burn the Meh instead of transferring to address(0)
-            uint256 totalMeh = product.mehDeposited + product.prizeMeh;
-            if (totalMeh > 0) {
-                mehToken.burn(totalMeh);
-            }
-            product.mehDeposited = 0;
-            product.prizeMeh = 0;
+        uint256 totalMeh = product.mehDeposited + product.prizeMeh;
+        if (totalMeh > 0) {
+            mehToken.burn(totalMeh);
         }
     }
 
-    // External claim function
-    function claim(uint256 gameId, uint256 productId, bool lock) external {
-        Game storage game = games[gameId];
-        require(game.end < block.timestamp, "Game not ended yet");
-        require(game.products[productId].isWinner, "Product did not win");
+    function claim(
+        uint256 _gameId,
+        uint256 _productId
+    ) external {
+        Game storage game = games[_gameId];
+        require(game.end < block.timestamp, "game not ended");
+        require(game.products[_productId].mehStore, "product not in store");
 
-        uint256 userDeposit = userDeposits[msg.sender][productId];
-        Product storage product = game.products[productId];
-        uint256 totalMehInProduct = product.mehDeposited;
-        uint256 prizeMeh = product.prizeMeh;
+        uint256 deposit = deposits[msg.sender][_productId];
+        Product storage product = game.products[_productId];
 
-        if (lock) {
-            // Lock the funds by zeroing out the user's deposit for this product
-            userDeposits[msg.sender][productId] = 0;
-        } else {
-            // Calculate the payout for the user based on their share of the total deposits
-            uint256 payout = userDeposit + (userDeposit * prizeMeh / totalMehInProduct);
+        // TODO claim ERC/721 token for limited run
+        // TODO claim ERC/721 token for contract
 
-            // Transfer the calculated payout to the user and clear their deposit record
-            mehToken.transfer(msg.sender, payout);
-            userDeposits[msg.sender][productId] = 0;
-        }
+        uint256 payout = (deposit * product.prizeMeh / product.mehDeposited);
+        deposits[msg.sender][_productId] = 0;
+        mehToken.transfer(msg.sender, payout);
     }
 }
