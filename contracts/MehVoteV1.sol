@@ -21,20 +21,31 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 id;
         uint256 begin;
         uint256 end;
-        mapping(uint256 => Product) products;
+        mapping(uint256 => Product) products; // products in game
         uint256 numProducts;
     }
 
     struct Product {
         uint256 id;
-        uint256 mehDeposited;
-        uint256 mehNeeded;
-        uint256 prizeMeh;
-        uint256 limitedRun;
-        bool mehStore;
+        uint256 mehDeposited; // meh currently deposited
+        uint256 mehNeeded; // meh needed to list on meh.store
+        uint256 prizeMeh; // prize in meh
+        uint256 genesisLimit; // genesis product transfered to top depositors into product
+        bool mehStore; // event sent to list on meh.store
         uint256 begin;
         uint256 end;
+        uint256 mehCost; // meh needed to make product
+        uint256 royaltyBase; // [1-100] base percentage available to royalty contract holders
     }
+
+    event MehStore (
+        uint256 productId,
+        uint256 genesisRun,
+        string genesisMerkleRoot,
+        string allocatorMerkleRoot,
+        uint256 mehCost,
+        uint256 royaltyBase
+    );
 
     mapping(uint256 => Game) public games;
     mapping(address => mapping(uint256 => uint256)) public deposits;
@@ -58,14 +69,14 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         gameIdCounter.increment();
     }
 
-    // Owner function to add a product to a game
     function addProductToGame(
         uint256 _gameId,
-        uint256 _prizeMeh,
         uint256 _mehNeeded,
-        uint256 _limitedRun,
+        uint256 _genesisLimit,
         uint256 _begin,
-        uint256 _end
+        uint256 _end,
+        uint256 _mehCost,
+        uint256 _royaltyBase
     ) external onlyOwner {
         Game storage game = games[_gameId];
         require(game.id != 0, "game does not exist");
@@ -74,12 +85,14 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         game.products[productId] = Product({
             id: productId,
             mehDeposited: 0,
-            prizeMeh: _prizeMeh,
+            prizeMeh: 0,
             mehNeeded: _mehNeeded,
             mehStore: false,
-            limitedRun: _limitedRun,
+            genesisLimit: _genesisLimit,
             begin: _begin,
-            end: _end
+            end: _end,
+            mehCost: _mehCost,
+            royaltyBase: _royaltyBase
         });
 
         productIdCounter.increment();
@@ -90,7 +103,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _gameId,
         uint256 _productId,
         uint256 _amt
-    ) external {
+    ) external nonReentrant {
         Game storage game = games[_gameId];
         Product storage product = game.products[_productId];
 
@@ -106,6 +119,17 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         product.mehDeposited += amt;
         if (product.mehDeposited == product.mehNeeded) {
             product.mehStore = true;
+            string memory merkleRoot = "abc123"; //TODO generate
+
+            emit MehStore(
+                _productId,
+                product.genesisLimit,
+                merkleRoot,
+                merkleRoot,
+                product.mehCost,
+                product.royaltyBase
+            );
+
         }
 
         deposits[msg.sender][_productId] += amt;
@@ -146,13 +170,15 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     function claim(
         uint256 _gameId,
         uint256 _productId
-    ) external {
+    ) external nonReentrant {
         Game storage game = games[_gameId];
         require(game.end < block.timestamp, "game not ended");
         require(game.products[_productId].mehStore, "product not in store");
 
         uint256 deposit = deposits[msg.sender][_productId];
         Product storage product = game.products[_productId];
+
+        // TODO determine ratio and mint royalty contract
 
         // TODO claim ERC/721 token for limited run
         // TODO claim ERC/721 token for contract
