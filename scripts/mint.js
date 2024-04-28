@@ -4,6 +4,7 @@ const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const MEH_TOKEN = process.env.MEH_TOKEN;
 
 //npx hardhat run scripts/mint.js --network base
+//npx hardhat run scripts/mint.js --network basesepolia
 async function main() {
     const Meh = await ethers.getContractFactory("Meh");
     const meh = await Meh.attach(MEH_TOKEN);
@@ -16,7 +17,7 @@ async function main() {
     // yusuf 0xc2fB492FD515260725AdCfa43eB72ECDcB948836
     // jobu 0x10FeB6f3111197336bC64ad3D0A123F22719D58A
     // vinyls
-    await meh.mint("0x67DA0cE8f98cc9843716e435Caf3449Bd9709a05", "1000000000000000000");
+    await meh.mint("0x10FeB6f3111197336bC64ad3D0A123F22719D58A", "2000000000000000000000000000");
     console.log("done");
 
 

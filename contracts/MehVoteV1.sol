@@ -32,6 +32,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 prizeMeh;
         uint256 limitedRun;
         bool mehStore;
+        uint256 begin;
+        uint256 end;
     }
 
     mapping(uint256 => Game) public games;
@@ -39,6 +41,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
 
     constructor(IERC20Burnable _mehToken) {
         mehToken = _mehToken;
+        gameIdCounter.increment();
+        productIdCounter.increment();
     }
 
     function createGame(
@@ -50,6 +54,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         game.id = gameId;
         game.begin = _begin;
         game.end = _end;
+
         gameIdCounter.increment();
     }
 
@@ -58,7 +63,9 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _gameId,
         uint256 _prizeMeh,
         uint256 _mehNeeded,
-        uint256 _limitedRun
+        uint256 _limitedRun,
+        uint256 _begin,
+        uint256 _end
     ) external onlyOwner {
         Game storage game = games[_gameId];
         require(game.id != 0, "game does not exist");
@@ -70,7 +77,9 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
             prizeMeh: _prizeMeh,
             mehNeeded: _mehNeeded,
             mehStore: false,
-            limitedRun: _limitedRun
+            limitedRun: _limitedRun,
+            begin: _begin,
+            end: _end
         });
 
         productIdCounter.increment();
