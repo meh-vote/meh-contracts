@@ -21,29 +21,26 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 id;
         uint256 begin;
         uint256 end;
-        mapping(uint256 => Product) products; // products in game
+        Product[] products;
         uint256 numProducts;
     }
 
     struct Product {
         uint256 id;
+        string name;
         uint256 mehDeposited; // meh currently deposited
         uint256 mehNeeded; // meh needed to list on meh.store
         uint256 prizeMeh; // prize in meh
-        uint256 genesisLimit; // genesis product transfered to top depositors into product
         bool mehStore; // event sent to list on meh.store
         uint256 begin;
         uint256 end;
-        uint256 mehCost; // meh needed to make product
         uint256 royaltyBase; // [1-100] base percentage available to royalty contract holders
     }
 
     event MehStore (
         uint256 productId,
-        uint256 genesisRun,
-        string genesisMerkleRoot,
+        string productName,
         string allocatorMerkleRoot,
-        uint256 mehCost,
         uint256 royaltyBase
     );
 
@@ -71,32 +68,30 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
 
     function addProductToGame(
         uint256 _gameId,
+        string memory _name,
         uint256 _mehNeeded,
-        uint256 _genesisLimit,
         uint256 _begin,
         uint256 _end,
-        uint256 _mehCost,
         uint256 _royaltyBase
     ) external onlyOwner {
         Game storage game = games[_gameId];
         require(game.id != 0, "game does not exist");
 
         uint256 productId = productIdCounter.current();
-        game.products[productId] = Product({
+        Product memory newProduct = Product({
             id: productId,
+            name: _name,
             mehDeposited: 0,
             prizeMeh: 0,
             mehNeeded: _mehNeeded,
             mehStore: false,
-            genesisLimit: _genesisLimit,
             begin: _begin,
             end: _end,
-            mehCost: _mehCost,
             royaltyBase: _royaltyBase
         });
-
-        productIdCounter.increment();
+        game.products.push(newProduct);
         game.numProducts++;
+        productIdCounter.increment();
     }
 
     function depositMeh(
@@ -123,10 +118,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
 
             emit MehStore(
                 _productId,
-                product.genesisLimit,
+                product.name,
                 merkleRoot,
-                merkleRoot,
-                product.mehCost,
                 product.royaltyBase
             );
 
@@ -186,5 +179,10 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 payout = (deposit * product.prizeMeh / product.mehDeposited);
         deposits[msg.sender][_productId] = 0;
         mehToken.transfer(msg.sender, payout);
+    }
+
+    // getters
+    function getProductsByGameId(uint256 gameId) public view returns (Product[] memory) {
+        return games[gameId].products;
     }
 }

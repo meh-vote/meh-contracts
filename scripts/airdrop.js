@@ -4,7 +4,7 @@ const ETH_MULTIPLIER = 1000000000000000000;
 
 const MEH_AIRDROP = process.env.MEH_AIRDROP;
 
-
+//npx hardhat run scripts/airdrop.js --network base
 async function main() {
     const MehAirdrop = await ethers.getContractFactory("MehAirdropV1");
     const mehAirdrop = await MehAirdrop.attach(MEH_AIRDROP);
