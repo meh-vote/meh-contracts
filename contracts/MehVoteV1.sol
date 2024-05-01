@@ -28,8 +28,9 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     struct Product {
         uint256 id;
         string name;
-        uint256 mehDeposited; // meh currently deposited
-        uint256 mehNeeded; // meh needed to list on meh.store
+        uint256 mehContractsDeposited; // meh contracts deposited
+        uint256 mehContracts;
+        uint256 mehContractPrice; // meh contracts available
         uint256 prizeMeh; // prize in meh
         bool mehStore; // event sent to list on meh.store
         uint256 begin;
@@ -69,7 +70,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     function addProductToGame(
         uint256 _gameId,
         string memory _name,
-        uint256 _mehNeeded,
+        uint256 _mehContractPrice,
+        uint256 _mehContracts,
         uint256 _begin,
         uint256 _end,
         uint256 _royaltyBase
@@ -81,9 +83,10 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         Product memory newProduct = Product({
             id: productId,
             name: _name,
-            mehDeposited: 0,
+            mehContractsDeposited: 0,
             prizeMeh: 0,
-            mehNeeded: _mehNeeded,
+            mehContractPrice: _mehContractPrice,
+            mehContracts: _mehContracts,
             mehStore: false,
             begin: _begin,
             end: _end,
@@ -97,22 +100,24 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     function depositMeh(
         uint256 _gameId,
         uint256 _productId,
-        uint256 _amt
+        uint256 _numContracts
     ) external nonReentrant {
         Game storage game = games[_gameId];
         Product storage product = game.products[_productId];
 
         require(product.id != 0, "product does not exist");
         require(!product.mehStore, "product already in meh.store");
+        require(
+            product.mehContractsDeposited + _numContracts <= product.mehContracts,
+            "too many contracts"
+        );
 
-        uint256 amt = _amt;
-        if(product.mehDeposited + amt > product.mehNeeded) {
-            amt = product.mehNeeded - product.mehDeposited;
-        }
-
+        uint256 amt = _numContracts * product.mehContractPrice;
         mehToken.transferFrom(msg.sender, address(this), amt);
-        product.mehDeposited += amt;
-        if (product.mehDeposited == product.mehNeeded) {
+        deposits[msg.sender][_productId] += _numContracts;
+
+        product.mehContractsDeposited += _numContracts;
+        if (product.mehContractsDeposited == product.mehContracts) {
             product.mehStore = true;
             string memory merkleRoot = "def-001";
 
@@ -122,10 +127,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
                 merkleRoot,
                 product.royaltyBase
             );
-
         }
-
-        deposits[msg.sender][_productId] += amt;
     }
 
     function depositMehStore(uint256 _amount) external onlyOwner {
@@ -146,7 +148,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         mehToken.transferFrom(msg.sender, address(this), _amount);
     }
 
-    function burnLoserMeh(
+    function burnLoserPrizeMeh(
         uint256 _gameId,
         uint256 _productId
     ) external onlyOwner {
@@ -154,9 +156,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         Product storage product = game.products[_productId];
         require(!product.mehStore, "product in store");
 
-        uint256 totalMeh = product.mehDeposited + product.prizeMeh;
-        if (totalMeh > 0) {
-            mehToken.burn(totalMeh);
+        if (product.prizeMeh > 0) {
+            mehToken.burn(product.prizeMeh);
         }
     }
 
@@ -169,14 +170,9 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         require(game.products[_productId].mehStore, "product not in store");
 
         uint256 deposit = deposits[msg.sender][_productId];
+        require(deposit > 0, "no deposit");
         Product storage product = game.products[_productId];
-
-        // TODO determine ratio and mint royalty contract
-
-        // TODO claim ERC/721 token for limited run
-        // TODO claim ERC/721 token for contract
-
-        uint256 payout = (deposit * product.prizeMeh / product.mehDeposited);
+        uint256 payout = (deposit * product.prizeMeh) / (product.mehContracts * product.mehContractsDeposited);
         deposits[msg.sender][_productId] = 0;
         mehToken.transfer(msg.sender, payout);
     }

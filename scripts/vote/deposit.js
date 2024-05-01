@@ -4,7 +4,7 @@ const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_VOTE = process.env.MEH_VOTE;
 
-//npx hardhat run scripts/vote/get.js --network basesepolia
+//npx hardhat run scripts/vote/deposit.js --network basesepolia
 async function main() {
     const Meh = await ethers.getContractFactory("Meh");
     const meh = await Meh.attach(MEH_TOKEN);
@@ -15,10 +15,18 @@ async function main() {
 
     const [owner] = await ethers.getSigners();
 
+
+    await meh.approve(MEH_VOTE, "20000000000000000000000000")
+
+    await mehVote.depositMeh(
+        1,
+        1,
+        "20000000000000000000000000",
+    );
+
     let games = await mehVote.getProductsByGameId(1);
     console.log(games[1]);
 
-    let deposit = await mehVote.getDeposit();
-
 }
+
 main();
