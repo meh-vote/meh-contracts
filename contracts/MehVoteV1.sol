@@ -109,14 +109,14 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         require(!product.mehStore, "product already in meh.store");
         require(
             product.mehContractsDeposited + _numContracts <= product.mehContracts,
-            "too many contracts"
+            "sellout"
         );
 
         uint256 amt = _numContracts * product.mehContractPrice;
         mehToken.transferFrom(msg.sender, address(this), amt);
         deposits[msg.sender][_productId] += _numContracts;
-
         product.mehContractsDeposited += _numContracts;
+
         if (product.mehContractsDeposited == product.mehContracts) {
             product.mehStore = true;
             string memory merkleRoot = "def-001";
@@ -169,12 +169,16 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         require(game.end < block.timestamp, "game not ended");
         require(game.products[_productId].mehStore, "product not in store");
 
-        uint256 deposit = deposits[msg.sender][_productId];
-        require(deposit > 0, "no deposit");
+        uint256 contracts = deposits[msg.sender][_productId];
+        require(contracts > 0, "no contracts");
+
         Product storage product = game.products[_productId];
-        uint256 payout = (deposit * product.prizeMeh) / (product.mehContracts * product.mehContractsDeposited);
+        uint256 payout = product.prizeMeh * (contracts  / product.mehContracts);
         deposits[msg.sender][_productId] = 0;
         mehToken.transfer(msg.sender, payout);
+
+        //todo handle losers
+        //todo mint contracts
     }
 
     // getters

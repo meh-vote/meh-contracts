@@ -746,8 +746,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehVoteV1.sol": {
-      "lastModificationDate": 1714570148431,
-      "contentHash": "dfbbecb03586729b6fb5791a05959a45",
+      "lastModificationDate": 1714602714151,
+      "contentHash": "9860d10db1477663477aa0c9066de8d2",
       "sourceName": "contracts/MehVoteV1.sol",
       "solcConfig": {
         "version": "0.8.24",
