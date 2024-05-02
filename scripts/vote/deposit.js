@@ -21,11 +21,11 @@ async function main() {
     await mehVote.depositMeh(
         1,
         1,
-        "20000000000000000000000000",
+        200,
     );
 
     let games = await mehVote.getProductsByGameId(1);
-    console.log(games[1]);
+    console.log(games[0]);
 
 }
 

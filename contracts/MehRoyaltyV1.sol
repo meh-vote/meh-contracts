@@ -1,63 +1,89 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+
 
 interface IERC20Burnable is IERC20 {
     function burn(uint256 amount) external;
 }
 
-contract MehRoyalty is ERC721, Ownable {
-    uint256 public constant MEH_ROYALTY_DENOMINATOR = 1000;
+contract MehRoyalty is ERC721, Ownable, ReentrancyGuard {
     string private _baseTokenURI;
     IERC20Burnable public immutable mehToken;
-
-    struct MehRoyaltyData {
-        uint256 royaltyNumerator;
-        uint256 royaltyDenominator;
-        uint256 productId;
-        uint256 mehDeposited;
-    }
-
-    mapping(uint256 => MehRoyaltyData) public royalties;
+    address public MINTER_ADDRESS;
 
     constructor(IERC20Burnable _mehToken) ERC721("MehRoyalty", "MR1") {
         mehToken = _mehToken;
     }
 
-    function mint(
-        uint256 tokenId,
-        uint256 royaltyValue,
-        uint256 productId,
-        address to
+    struct Product {
+        uint256 totalContracts;  // Total number of contract tokens allowed for this product
+        uint256 currentSerial;   // Current serial number (last minted token)
+    }
+
+    mapping(uint256 => Product) public products;
+    mapping(uint256 => uint256) public deposits;
+
+    function createProduct(
+        uint256 _productId,
+        uint256 _totalContracts
     ) external onlyOwner {
-        _mint(to, tokenId);
-        royalties[tokenId] = MehRoyaltyData({
-            royaltyNumerator: royaltyValue,
-            royaltyDenominator : MEH_ROYALTY_DENOMINATOR,
-            productId: productId,
-            mehDeposited: 0
+        products[_productId] = Product({
+            totalContracts: _totalContracts,
+            currentSerial: 0
         });
     }
 
-    function depositMeh(uint256 tokenId) external payable {
-        require(_exists(tokenId), "token does not exist");
-        royalties[tokenId].mehDeposited += msg.value;
+
+    function mint(uint256 _productId, address _to) public {
+        require(
+            msg.sender == MINTER_ADDRESS,
+            "mint can only be called by minter"
+        );
+
+        Product storage product = products[_productId];
+        require(product.currentSerial < product.totalContracts, "All tokens minted for this product");
+
+        uint256 newSerialNumber = product.currentSerial + 1;
+        uint256 tokenId = generateTokenId(_productId, newSerialNumber);
+
+        _mint(_to, tokenId);
+        product.currentSerial = newSerialNumber; // Increment the serial number
     }
 
-    function extractMeh(uint256 tokenId, uint256 amount) external {
-        require(ownerOf(tokenId) == msg.sender, "caller is not the owner of the token");
-        require(royalties[tokenId].mehDeposited >= amount, "insufficient meh");
+    function generateTokenId(uint256 _productId, uint256 _serialNumber) private pure returns (uint256) {
+        return _productId * 10000 + _serialNumber;
+    }
 
-        royalties[tokenId].mehDeposited -= amount;
-        payable(msg.sender).transfer(amount);
+    function depositMeh(uint256 tokenId, uint256 amt) external nonReentrant payable {
+        require(_exists(tokenId), "token does not exist");
+        mehToken.transferFrom(msg.sender, address(this), amt);
+        deposits[tokenId] += amt;
+    }
+
+    function extractMeh(uint256 tokenId, uint256 amt) external nonReentrant {
+        require(ownerOf(tokenId) == msg.sender, "caller is not the owner of the token");
+        require(deposits[tokenId] >= amt, "insufficient meh");
+
+        deposits[tokenId] = deposits[tokenId] - amt;
+        mehToken.transferFrom(address(this), msg.sender, amt);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
+    }
+
+    function setBaseTokenURI(string calldata newURI) external onlyOwner {
+        _baseTokenURI = newURI;
+    }
+
+    function updateMinter(address newMinter) external onlyOwner {
+        MINTER_ADDRESS = newMinter;
     }
 }

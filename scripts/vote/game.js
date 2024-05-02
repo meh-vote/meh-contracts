@@ -15,18 +15,21 @@ async function main() {
 
     const [owner] = await ethers.getSigners();
 
-    // 1714317430 apr 28th 8AM
-    // 1714576622 may 1
-    await mehVote.createGame(1714317430, 1714576622);
+
+    // 1714603104 may 1 now
+    // 1714606704 1 hour from now
+    // 1714865904 may 4th
+    await mehVote.createGame(1714603104, 1714865904);
     console.log("game created");
 
     await mehVote.addProductToGame(
         1,
         "MEH BAG 01",
-        "10000000000000000000000000",
-        1714317430,
-        1714576622,
-        10
+        "50000000000000000000000",
+        200,
+        1714603104,
+        1714606704,
+        10,
     );
 
     console.log("product 1 added");
@@ -35,9 +38,10 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH BAG 02",
-        "20000000000000000000000000",
-        1714317430,
-        1714576622,
+        "100000000000000000000000",
+        100,
+        1714603104,
+        1714865904,
         10
     );
     console.log("product 2 added");
@@ -45,10 +49,11 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH BAG 03",
-        "30000000000000000000000000",
-        1714317430,
-        1714576622,
-        30
+        "100000000000000000000000",
+        100,
+        1714603104,
+        1714865904,
+        10
     );
 
     console.log("product 3 added");
@@ -56,10 +61,11 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH HAT 01",
-        "10000000000000000000000000",
-        1714317430,
-        1714576622,
-        50
+        "1000000000000000000000000",
+        25,
+        1714603104,
+        1714865904,
+        25
     );
 
     console.log("product 4 added");
@@ -67,10 +73,11 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH HAT 02",
-        "20000000000000000000000000",
-        1714317430,
-        1714576622,
-        50
+        "1000000000000000000000000",
+        25,
+        1714603104,
+        1714865904,
+        25
     );
 
     console.log("product 5 added");
@@ -78,10 +85,11 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH HAT 03",
-        "30000000000000000000000000",
-        1714317430,
-        1714576622,
-        30
+        "1000000000000000000000000",
+        25,
+        1714603104,
+        1714865904,
+        25
     );
 
     console.log("product 6 added");
@@ -89,10 +97,11 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH SHIRT 01",
-        "5000000000000000000000000",
-        1714317430,
-        1714576622,
-        5
+        "1000000000000000000000000",
+        25,
+        1714603104,
+        1714865904,
+        25
     );
 
     console.log("product 7 added");
@@ -100,21 +109,24 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH SHIRT 02",
-        "7000000000000000000000000",
-        1714317430,
-        1714576622,
-        7
+        "1000000000000000000000000",
+        25,
+        1714603104,
+        1714865904,
+        25
     );
 
     console.log("product 8 added");
 
     await meh.approve(MEH_VOTE, "100000000000000000000000")
 
-    await mehVote.depositMeh(
+    await mehVote.depositPrizeMeh(
         1,
         1,
         "100000000000000000000000",
     );
+
+    console.log("prize meh deposited");
 
 }
 
