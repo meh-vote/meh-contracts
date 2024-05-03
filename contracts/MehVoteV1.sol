@@ -5,13 +5,20 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "hardhat/console.sol";
 
 interface IERC20Burnable is IERC20 {
     function burn(uint256 amount) external;
 }
 
+interface IRoyalty {
+    function depositMehToken(uint256 tokenId, uint256 amt) external payable;
+    function mint(uint256 _productId, address _to) external;
+}
+
 contract MehVoteV1 is Ownable, ReentrancyGuard {
     IERC20Burnable public immutable mehToken;
+    IRoyalty public immutable royalties;
 
     using Counters for Counters.Counter;
     Counters.Counter private gameIdCounter;
@@ -49,8 +56,12 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     mapping(uint256 => Game) public games;
     mapping(address => mapping(uint256 => uint256)) public deposits;
 
-    constructor(IERC20Burnable _mehToken) {
+    constructor(
+        IERC20Burnable _mehToken,
+        IRoyalty _royalties
+    ) {
         mehToken = _mehToken;
+        royalties = _royalties;
         gameIdCounter.increment();
         productIdCounter.increment();
     }
@@ -104,34 +115,29 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _gameId,
         uint256 _productId,
         uint256 _numContracts
-    ) external nonReentrant {
+    ) public nonReentrant {
         Game storage game = games[_gameId];
-        Product storage product = game.products[_productId];
+        Product storage product;
+        bool found = false;
 
-        require(product.id != 0, "product does not exist");
-        require(!product.mehStore, "product already in meh.store");
-        require(
-            product.mehContractsDeposited + _numContracts > product.mehContracts,
-            "sellout"
-        );
 
-        uint256 amt = _numContracts * product.mehContractPrice;
-        mehToken.transferFrom(msg.sender, address(this), amt);
-        deposits[msg.sender][_productId] += _numContracts;
-        product.mehContractsDeposited += _numContracts;
+        for (uint256 i = 0; i < game.products.length; i++) {
+            if (game.products[i].id == _productId) {
+                product = game.products[i];
+                require(!product.mehStore, "product already listed on meh.store");
+                require(product.mehContractsDeposited + _numContracts <= product.mehContracts, "not enough contracts available");
+                uint256 totalCost = _numContracts * product.mehContractPrice;
+                deposits[msg.sender][_productId] += _numContracts;
+                product.mehContractsDeposited += _numContracts;
 
-        if (product.mehContractsDeposited + _numContracts >= product.mehContracts) {
-            product.mehStore = true;
-            string memory merkleRoot = "def-001";
-
-            emit MehStore(
-                _productId,
-                product.name,
-                merkleRoot,
-                product.totalContracts
-            );
+                require(mehToken.transferFrom(msg.sender, address(this), totalCost), "meh deposit failed");
+                found = true;
+                break;
+            }
         }
-        product.mehContractsDeposited += _numContracts;
+
+        require(found, "product not found");
+
     }
 
     function depositMehStore(uint256 _amount) external onlyOwner {
@@ -144,24 +150,13 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _amount
     ) external onlyOwner {
         Game storage game = games[_gameId];
-        Product storage product = game.products[_productId];
 
-        require(product.id != 0, "product does not exist");
-        product.prizeMeh += _amount;
-
-        mehToken.transferFrom(msg.sender, address(this), _amount);
-    }
-
-    function burnLoserPrizeMeh(
-        uint256 _gameId,
-        uint256 _productId
-    ) external onlyOwner {
-        Game storage game = games[_gameId];
-        Product storage product = game.products[_productId];
-        require(!product.mehStore, "product in store");
-
-        if (product.prizeMeh > 0) {
-            mehToken.burn(product.prizeMeh);
+        for (uint i = 0; i < game.products.length; i++) {
+            if (game.products[i].id == _productId) {
+                game.products[i].prizeMeh = _amount;
+                mehToken.transferFrom(msg.sender, address(this), _amount);
+                break;
+            }
         }
     }
 
@@ -170,19 +165,23 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _productId
     ) external nonReentrant {
         Game storage game = games[_gameId];
-        require(game.end < block.timestamp, "game not ended");
-        require(game.products[_productId].mehStore, "product not in store");
+        Product storage product = game.products[_productId];
+        //require(game.end < block.timestamp, "game not ended");
+        require(product.id != 0, "product does not exist");
 
         uint256 contracts = deposits[msg.sender][_productId];
         require(contracts > 0, "no contracts");
+        uint256 payout = contracts * product.mehContractPrice;
+        if (game.products[_productId].mehStore) {
+            payout = product.prizeMeh * (contracts  / product.mehContracts);
+            for (uint i = 1; i <= contracts; i++) {
+                royalties.mint(_productId, msg.sender);
+            }
+        }
 
-        Product storage product = game.products[_productId];
-        uint256 payout = product.prizeMeh * (contracts  / product.mehContracts);
         deposits[msg.sender][_productId] = 0;
         mehToken.transfer(msg.sender, payout);
 
-        //todo handle losers
-        //todo mint contracts
     }
 
     // getters

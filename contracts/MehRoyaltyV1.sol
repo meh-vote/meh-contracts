@@ -13,7 +13,7 @@ interface IERC20Burnable is IERC20 {
     function burn(uint256 amount) external;
 }
 
-contract MehRoyalty is ERC721, Ownable, ReentrancyGuard {
+contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
     string private _baseTokenURI;
     IERC20Burnable public immutable mehToken;
     address public MINTER_ADDRESS;
@@ -40,7 +40,6 @@ contract MehRoyalty is ERC721, Ownable, ReentrancyGuard {
         });
     }
 
-
     function mint(uint256 _productId, address _to) public {
         require(
             msg.sender == MINTER_ADDRESS,
@@ -48,26 +47,26 @@ contract MehRoyalty is ERC721, Ownable, ReentrancyGuard {
         );
 
         Product storage product = products[_productId];
-        require(product.currentSerial < product.totalContracts, "All tokens minted for this product");
+        require(product.currentSerial < product.totalContracts, "all tokens minted for this product");
 
         uint256 newSerialNumber = product.currentSerial + 1;
         uint256 tokenId = generateTokenId(_productId, newSerialNumber);
 
         _mint(_to, tokenId);
-        product.currentSerial = newSerialNumber; // Increment the serial number
+        product.currentSerial = newSerialNumber;
     }
 
     function generateTokenId(uint256 _productId, uint256 _serialNumber) private pure returns (uint256) {
         return _productId * 10000 + _serialNumber;
     }
 
-    function depositMeh(uint256 tokenId, uint256 amt) external nonReentrant payable {
+    function depositMehToken(uint256 tokenId, uint256 amt) public nonReentrant payable {
         require(_exists(tokenId), "token does not exist");
         mehToken.transferFrom(msg.sender, address(this), amt);
         deposits[tokenId] += amt;
     }
 
-    function extractMeh(uint256 tokenId, uint256 amt) external nonReentrant {
+    function extractMehToken(uint256 tokenId, uint256 amt) public nonReentrant {
         require(ownerOf(tokenId) == msg.sender, "caller is not the owner of the token");
         require(deposits[tokenId] >= amt, "insufficient meh");
 

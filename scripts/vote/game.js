@@ -3,6 +3,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_VOTE = process.env.MEH_VOTE;
+const MEH_ROYALTIES = process.env.MEH_ROYALTIES;
 
 //npx hardhat run scripts/vote/game.js --network basesepolia
 async function main() {
@@ -12,24 +13,27 @@ async function main() {
     const MehVote = await ethers.getContractFactory("MehVoteV1");
     const mehVote = await MehVote.attach(MEH_VOTE);
 
+    const MehRoyalties = await ethers.getContractFactory("MehRoyaltyV1");
+    const mehRoyalties = await MehRoyalties.attach(MEH_ROYALTIES);
+
 
     const [owner] = await ethers.getSigners();
 
 
     // 1714603104 may 1 now
-    // 1714606704 1 hour from now
-    // 1714865904 may 4th
-    await mehVote.createGame(1714603104, 1714865904);
+    // 1715303900 may 10th
+    await mehVote.createGame(1714603104, 1715303900);
     console.log("game created");
 
     await mehVote.addProductToGame(
         1,
-        "MEH BAG 01",
+        "MEH HAT 01",
+        100,
         "50000000000000000000000",
-        200,
         1714603104,
-        1714606704,
-        10,
+        1715303900,
+        1000,
+        true
     );
 
     console.log("product 1 added");
@@ -37,83 +41,89 @@ async function main() {
 
     await mehVote.addProductToGame(
         1,
-        "MEH BAG 02",
-        "100000000000000000000000",
-        100,
+        "MEH SHIRT 01",
+        25,
+        "25000000000000000000000000",
         1714603104,
-        1714865904,
-        10
+        1715303900,
+        1000,
+        false
     );
     console.log("product 2 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH BAG 03",
-        "100000000000000000000000",
-        100,
+        "MEH DIGITAL STICKERS 01",
+        250,
+        "1000000000000000000000000",
         1714603104,
-        1714865904,
-        10
+        1715303900,
+        1000,
+        true
     );
-
-    console.log("product 3 added");
+    console.log("product 2 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH HAT 01",
+        "MEH STICKERS 01",
+        250,
         "1000000000000000000000000",
-        25,
         1714603104,
-        1714865904,
-        25
+        1715303900,
+        1000,
+        true
     );
 
     console.log("product 4 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH HAT 02",
+        "MEH BAG 01",
+        250,
         "1000000000000000000000000",
-        25,
         1714603104,
-        1714865904,
-        25
+        1715303900,
+        1000,
+        true
     );
 
     console.log("product 5 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH HAT 03",
+        "MEH BAG 02",
+        250,
         "1000000000000000000000000",
-        25,
         1714603104,
-        1714865904,
-        25
+        1715303900,
+        1000,
+        true
     );
 
     console.log("product 6 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH SHIRT 01",
-        "1000000000000000000000000",
+        "MEH HOODIE 01",
         25,
+        "25000000000000000000000000",
         1714603104,
-        1714865904,
-        25
+        1715303900,
+        1000,
+        false
     );
 
     console.log("product 7 added");
 
     await mehVote.addProductToGame(
         1,
-        "MEH SHIRT 02",
+        "MEH DECK 01",
+        250,
         "1000000000000000000000000",
-        25,
         1714603104,
-        1714865904,
-        25
+        1715303900,
+        1000,
+        true
     );
 
     console.log("product 8 added");
@@ -127,6 +137,10 @@ async function main() {
     );
 
     console.log("prize meh deposited");
+
+    await mehRoyalties.updateMinter(MEH_VOTE);
+
+    console.log("minter updated");
 
 }
 

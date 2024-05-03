@@ -14,18 +14,19 @@ async function main() {
 
 
     const [owner] = await ethers.getSigners();
-
-
-    await meh.approve(MEH_VOTE, "20000000000000000000000000")
+    await meh.approve(MEH_VOTE, 0);
+    await meh.approve(MEH_VOTE, "5000000000000000000000000")
 
     await mehVote.depositMeh(
         1,
         1,
-        200,
+        1,
     );
 
-    let games = await mehVote.getProductsByGameId(1);
-    console.log(games[0]);
+    console.log("deposited meh");
+
+    // let games = await mehVote.getProductsByGameId(1);
+    // console.log(games[0]);
 
 }
 
