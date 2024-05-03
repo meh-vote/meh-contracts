@@ -132,6 +132,17 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
 
                 require(mehToken.transferFrom(msg.sender, address(this), totalCost), "meh deposit failed");
                 found = true;
+                if(product.mehContractsDeposited == product.mehContracts) {
+                    product.mehStore = true;
+                    product.end = block.timestamp;
+
+                    emit MehStore(
+                        product.id,
+                        product.name,
+                        'def-123',
+                        product.totalContracts
+                    );
+                }
                 break;
             }
         }

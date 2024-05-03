@@ -125,7 +125,20 @@ describe("meh vote", function () {
 
       let products = await this.mehVote.getProductsByGameId(1);
       expect(products[0].mehContractsDeposited.toNumber()).to.equal(1);
-      //expect(Number(products[0].prizeMeh.toString())).to.equal(100000000000000000000000);
+    });
+
+    it("sellout", async function () {
+      await this.meh.approve(this.mehVote.address, "5000000000000000000000000");
+
+      await this.mehVote.depositMeh(
+          1,
+          1,
+          100,
+      );
+
+      let products = await this.mehVote.getProductsByGameId(1);
+      expect(products[0].mehContractsDeposited.toNumber()).to.equal(100);
+      expect(products[0].mehStore).to.equal(true);
 
     });
 
