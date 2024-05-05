@@ -87,7 +87,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         uint256 _begin,
         uint256 _end,
         uint256 _totalContracts,
-        bool _limitedRun
+        bool _limitedRun,
+        uint256 _prizeMeh
     ) external onlyOwner {
         Game storage game = games[_gameId];
         require(game.id != 0, "game does not exist");
@@ -99,7 +100,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
             mehContractsDeposited: 0,
             mehContracts: _mehContracts,
             mehContractPrice: _mehContractPrice,
-            prizeMeh: 0,
+            prizeMeh: _prizeMeh,
             mehStore: false,
             begin: _begin,
             end: _end,
@@ -155,43 +156,31 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         mehToken.transfer(owner(), _amount);
     }
 
-    function depositPrizeMeh(
-        uint256 _gameId,
-        uint256 _productId,
-        uint256 _amount
-    ) external onlyOwner {
-        Game storage game = games[_gameId];
-
-        for (uint i = 0; i < game.products.length; i++) {
-            if (game.products[i].id == _productId) {
-                game.products[i].prizeMeh = _amount;
-                mehToken.transferFrom(msg.sender, address(this), _amount);
-                break;
-            }
-        }
-    }
-
     function claim(
         uint256 _gameId,
         uint256 _productId
     ) external nonReentrant {
         Game storage game = games[_gameId];
-        Product storage product = game.products[_productId];
-        //require(game.end < block.timestamp, "game not ended");
-        require(product.id != 0, "product does not exist");
 
-        uint256 contracts = deposits[msg.sender][_productId];
-        require(contracts > 0, "no contracts");
-        uint256 payout = contracts * product.mehContractPrice;
-        if (game.products[_productId].mehStore) {
-            payout = product.prizeMeh * (contracts  / product.mehContracts);
-            for (uint i = 1; i <= contracts; i++) {
-                royalties.mint(_productId, msg.sender);
+        for (uint i = 0; i < game.products.length; i++) {
+            if (game.products[i].id == _productId) {
+                Product storage product = game.products[i];
+                require(product.end < block.timestamp, "product active");
+                require(product.mehStore, "product not in store");
+                uint256 contracts = deposits[msg.sender][_productId];
+                require(contracts > 0, "no contracts");
+
+                if (product.mehStore) {
+                    for (uint j = 1; j <= contracts; j++) {
+                        royalties.mint(_productId, msg.sender);
+                    }
+                }
+                deposits[msg.sender][_productId] = 0;
+                return;
             }
         }
 
-        deposits[msg.sender][_productId] = 0;
-        mehToken.transfer(msg.sender, payout);
+        revert("invalid product");
 
     }
 

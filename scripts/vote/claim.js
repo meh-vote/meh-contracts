@@ -18,7 +18,7 @@ async function main() {
 
     await mehVote.claim(
         1,
-        1
+        2
     );
 
     let games = await mehVote.getProductsByGameId(1);

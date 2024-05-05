@@ -28,12 +28,12 @@ async function main() {
     await mehVote.addProductToGame(
         1,
         "MEH HAT 01",
-        100,
-        "50000000000000000000000",
+        25,
+        "25000000000000000000000000",
         1714603104,
         1715303900,
         1000,
-        true
+        false
     );
 
     console.log("product 1 added");
@@ -61,7 +61,7 @@ async function main() {
         1000,
         true
     );
-    console.log("product 2 added");
+    console.log("product 3 added");
 
     await mehVote.addProductToGame(
         1,
@@ -117,13 +117,13 @@ async function main() {
 
     await mehVote.addProductToGame(
         1,
-        "MEH DECK 01",
-        250,
-        "1000000000000000000000000",
+        "MEH HAT 02",
+        25,
+        "25000000000000000000000000",
         1714603104,
         1715303900,
         1000,
-        true
+        false
     );
 
     console.log("product 8 added");
