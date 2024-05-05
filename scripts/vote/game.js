@@ -33,7 +33,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        false
+        false,
+        "50000000000000000000000000",
     );
 
     console.log("product 1 added");
@@ -47,7 +48,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        false
+        false,
+        "50000000000000000000000000",
     );
     console.log("product 2 added");
 
@@ -59,7 +61,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        true
+        true,
+        "50000000000000000000000000",
     );
     console.log("product 3 added");
 
@@ -71,7 +74,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        true
+        true,
+        "50000000000000000000000000",
     );
 
     console.log("product 4 added");
@@ -84,7 +88,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        true
+        true,
+        "50000000000000000000000000",
     );
 
     console.log("product 5 added");
@@ -97,7 +102,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        true
+        true,
+        "50000000000000000000000000",
     );
 
     console.log("product 6 added");
@@ -110,7 +116,8 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        false
+        false,
+        "50000000000000000000000000",
     );
 
     console.log("product 7 added");
@@ -123,20 +130,11 @@ async function main() {
         1714603104,
         1715303900,
         1000,
-        false
+        false,
+        "50000000000000000000000000",
     );
 
     console.log("product 8 added");
-
-    await meh.approve(MEH_VOTE, "100000000000000000000000")
-
-    await mehVote.depositPrizeMeh(
-        1,
-        1,
-        "100000000000000000000000",
-    );
-
-    console.log("prize meh deposited");
 
     await mehRoyalties.updateMinter(MEH_VOTE);
 
