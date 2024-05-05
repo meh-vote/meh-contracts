@@ -860,8 +860,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehRoyaltyV1.sol": {
-      "lastModificationDate": 1714745368575,
-      "contentHash": "cc6672839b2589b0eb3df4840fa62f75",
+      "lastModificationDate": 1714881438748,
+      "contentHash": "97c75244e295ad1908418f8ebf96b2e2",
       "sourceName": "contracts/MehRoyaltyV1.sol",
       "solcConfig": {
         "version": "0.8.24",

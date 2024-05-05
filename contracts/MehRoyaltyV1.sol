@@ -40,7 +40,7 @@ contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
         });
     }
 
-    function mint(uint256 _productId, address _to) public {
+    function mint(uint256 _productId, address _to) public nonReentrant {
         require(
             msg.sender == MINTER_ADDRESS,
             "mint can only be called by minter"
@@ -60,7 +60,7 @@ contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
         return _productId * 10000 + _serialNumber;
     }
 
-    function depositMehToken(uint256 tokenId, uint256 amt) public nonReentrant payable {
+    function depositMehToken(uint256 tokenId, uint256 amt) public nonReentrant {
         require(_exists(tokenId), "token does not exist");
         mehToken.transferFrom(msg.sender, address(this), amt);
         deposits[tokenId] += amt;
@@ -69,9 +69,10 @@ contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
     function extractMehToken(uint256 tokenId, uint256 amt) public nonReentrant {
         require(ownerOf(tokenId) == msg.sender, "caller is not the owner of the token");
         require(deposits[tokenId] >= amt, "insufficient meh");
+        require(block.timestamp > 1720054800, "fourth of july");
 
         deposits[tokenId] = deposits[tokenId] - amt;
-        mehToken.transferFrom(address(this), msg.sender, amt);
+        mehToken.transfer(msg.sender, amt);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
