@@ -41,8 +41,10 @@ describe("meh royalty", function () {
 
         });
 
-        it("extracts meh for store", async function () {
-
+        it("base uri", async function () {
+            await this.mehRoyalty.setBaseTokenURI("https://app.pinata.cloud/meh/");
+            let baseurl = await this.mehRoyalty.baseURI();
+            expect(baseurl).to.equal("https://app.pinata.cloud/meh/");
         });
 
     });

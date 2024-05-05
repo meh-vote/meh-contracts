@@ -741,8 +741,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehVoteV1.sol": {
-      "lastModificationDate": 1714853102991,
-      "contentHash": "da5a66d73a3b484aeda7deeb30e4deb4",
+      "lastModificationDate": 1714883259097,
+      "contentHash": "b4d2f1753c0683b23ca0e5d591f2b08c",
       "sourceName": "contracts/MehVoteV1.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -773,14 +773,12 @@
         "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
-        "hardhat/console.sol"
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol"
       ],
       "versionPragmas": [
         "^0.8.24"
       ],
       "artifacts": [
-        "IERC20Burnable",
         "IRoyalty",
         "MehVoteV1"
       ]
@@ -860,8 +858,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehRoyaltyV1.sol": {
-      "lastModificationDate": 1714881438748,
-      "contentHash": "97c75244e295ad1908418f8ebf96b2e2",
+      "lastModificationDate": 1714883529751,
+      "contentHash": "cf8363b61f836240045536de1544aeb6",
       "sourceName": "contracts/MehRoyaltyV1.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -899,7 +897,6 @@
         "^0.8.24"
       ],
       "artifacts": [
-        "IERC20Burnable",
         "MehRoyaltyV1"
       ]
     },

@@ -5,11 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "hardhat/console.sol";
 
-interface IERC20Burnable is IERC20 {
-    function burn(uint256 amount) external;
-}
 
 interface IRoyalty {
     function depositMehToken(uint256 tokenId, uint256 amt) external payable;
@@ -17,7 +13,7 @@ interface IRoyalty {
 }
 
 contract MehVoteV1 is Ownable, ReentrancyGuard {
-    IERC20Burnable public immutable mehToken;
+    IERC20 public immutable mehToken;
     IRoyalty public immutable royalties;
 
     using Counters for Counters.Counter;
@@ -57,7 +53,7 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
     mapping(address => mapping(uint256 => uint256)) public deposits;
 
     constructor(
-        IERC20Burnable _mehToken,
+        IERC20 _mehToken,
         IRoyalty _royalties
     ) {
         mehToken = _mehToken;
@@ -120,7 +116,6 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
         Game storage game = games[_gameId];
         Product storage product;
         bool found = false;
-
 
         for (uint256 i = 0; i < game.products.length; i++) {
             if (game.products[i].id == _productId) {

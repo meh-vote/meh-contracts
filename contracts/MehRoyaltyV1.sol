@@ -8,17 +8,12 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-interface IERC20Burnable is IERC20 {
-    function burn(uint256 amount) external;
-}
-
 contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
-    string private _baseTokenURI;
-    IERC20Burnable public immutable mehToken;
+    string private baseTokenURI;
+    IERC20 public immutable mehToken;
     address public MINTER_ADDRESS;
 
-    constructor(IERC20Burnable _mehToken) ERC721("MehRoyalty", "MR1") {
+    constructor(IERC20 _mehToken) ERC721("MehRoyalty", "MR1") {
         mehToken = _mehToken;
     }
 
@@ -76,14 +71,18 @@ contract MehRoyaltyV1 is ERC721, Ownable, ReentrancyGuard {
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
+        return baseTokenURI;
     }
 
     function setBaseTokenURI(string calldata newURI) external onlyOwner {
-        _baseTokenURI = newURI;
+        baseTokenURI = newURI;
     }
 
     function updateMinter(address newMinter) external onlyOwner {
         MINTER_ADDRESS = newMinter;
+    }
+
+    function baseURI() public view returns (string memory) {
+        return baseTokenURI;
     }
 }
