@@ -44,9 +44,9 @@ describe("meh vote", function () {
       const [owner] = await ethers.getSigners();
       await this.meh.mint(owner.address, "1000000000000000000000000000");
 
-      let currentTimestamp = Math.floor(Date.now() / 1000);
-      let oneYearLaterTimestamp = currentTimestamp + 31536000;
-      await this.mehVote.createGame(currentTimestamp, oneYearLaterTimestamp);
+      let currentTimestamp = await time.latest();
+      let oneDayLaterTimestamp = currentTimestamp + 86400;
+      await this.mehVote.createGame(currentTimestamp, oneDayLaterTimestamp);
       let game = await this.mehVote.games(1);
       expect(game.id.toNumber()).to.equal(1);
 
@@ -56,8 +56,8 @@ describe("meh vote", function () {
           "MEH HAT 01",
           100,
           "50000000000000000000000",
-          1714603104,
-          1715303900,
+          currentTimestamp,
+          oneDayLaterTimestamp,
           1000,
           true,
           "100000000000000000000000"
@@ -100,9 +100,9 @@ describe("meh vote", function () {
       const [owner] = await ethers.getSigners();
       await this.meh.mint(owner.address, "1000000000000000000000000000");
 
-      let currentTimestamp = Math.floor(Date.now() / 1000);
-      let oneYearLaterTimestamp = currentTimestamp + 31536000;
-      await this.mehVote.createGame(currentTimestamp, oneYearLaterTimestamp);
+      let currentTimestamp = await time.latest();
+      let oneDayLaterTimestamp = currentTimestamp + 86400;
+      await this.mehVote.createGame(currentTimestamp, oneDayLaterTimestamp);
       let game = await this.mehVote.games(1);
       expect(game.id.toNumber()).to.equal(1);
 
@@ -112,8 +112,8 @@ describe("meh vote", function () {
           "MEH HAT 01",
           100,
           "50000000000000000000000",
-          1714603104,
-          1715303900,
+          currentTimestamp,
+          oneDayLaterTimestamp,
           1000,
           true,
           "100000000000000000000000"
@@ -177,6 +177,20 @@ describe("meh vote", function () {
 
     });
 
+    it("reverts deposit when product not open", async function () {
+      await this.meh.approve(this.mehVote.address, "10000000000000000000000000");
+      await time.increase(172800); // 2 days
+      await expectRevert(
+        this.mehVote.depositMeh(
+            1,
+            1,
+            1,
+        ),
+        "product not open for deposit"
+      );
+
+    });
+
   });
 
   describe("claim", function () {
@@ -197,8 +211,8 @@ describe("meh vote", function () {
           "MEH HAT 01",
           100,
           "50000000000000000000000",
-          1714603104,
-          1715303900,
+          currentTimestamp,
+          oneDayLaterTimestamp,
           1000,
           true,
           "100000000000000000000000"
@@ -213,8 +227,8 @@ describe("meh vote", function () {
           "MEH HAT 02",
           100,
           "50000000000000000000000",
-          1714603104,
-          1715303900,
+          currentTimestamp,
+          oneDayLaterTimestamp,
           1000,
           true,
           "100000000000000000000000"

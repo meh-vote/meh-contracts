@@ -122,6 +122,8 @@ contract MehVoteV1 is Ownable, ReentrancyGuard {
                 product = game.products[i];
                 require(!product.mehStore, "product already listed on meh.store");
                 require(product.mehContractsDeposited + _numContracts <= product.mehContracts, "not enough contracts available");
+                require(block.timestamp > product.begin, "product not open for deposit");
+                require(block.timestamp < product.end, "product not open for deposit");
                 uint256 totalCost = _numContracts * product.mehContractPrice;
                 deposits[msg.sender][_productId] += _numContracts;
                 product.mehContractsDeposited += _numContracts;
