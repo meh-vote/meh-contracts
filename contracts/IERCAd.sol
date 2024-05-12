@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-interface IERCProjector {
+interface IERCAd {
     function setAd(
         string memory adURI,
         string memory dataURI,
