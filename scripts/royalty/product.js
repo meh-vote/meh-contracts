@@ -29,53 +29,45 @@ async function main() {
 
     await mehRoyalties.createProduct(
         2,
-        1000,
+        2000,
     );
 
     console.log("product 2 added");
 
     await mehRoyalties.createProduct(
         3,
-        1000,
+        250,
     );
 
     console.log("product 3 added");
 
     await mehRoyalties.createProduct(
         4,
-        1000,
+        25,
     );
 
     console.log("product 4 added");
 
     await mehRoyalties.createProduct(
         5,
-        1000,
+        250,
     );
 
     console.log("product 5 added");
 
     await mehRoyalties.createProduct(
         6,
-        1000,
+        50,
     );
 
     console.log("product 6 added");
 
     await mehRoyalties.createProduct(
         7,
-        1000,
+        500,
     );
 
     console.log("product 7 added");
-
-
-    await mehRoyalties.createProduct(
-        8,
-        1000,
-    );
-
-    console.log("product 8 added");
 
 
 }

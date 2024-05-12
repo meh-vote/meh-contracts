@@ -3,7 +3,12 @@ require("@nomiclabs/hardhat-ethers");
 require("@openzeppelin/hardhat-upgrades");
 require("@nomiclabs/hardhat-etherscan");
 
-const { API_URL, PRIVATE_KEY, ACCOUNT1_PK } = process.env;
+const {
+  API_URL,
+  PRIVATE_KEY,
+  MAX_PRIVATE,
+  ACCOUNT1_PK
+} = process.env;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
