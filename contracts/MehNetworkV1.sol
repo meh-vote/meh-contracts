@@ -9,6 +9,6 @@ contract MehNetworkV1 is ERCAd {
 
     function signAd(uint256 id, bytes32[] calldata proof) public pure virtual override {
         // pay bounty if in audience
-        // record merkle root
+        super.signAd(id, proof);
     }
 }
