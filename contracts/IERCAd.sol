@@ -2,13 +2,28 @@
 pragma solidity ^0.8.24;
 
 interface IERCAd {
+    struct Ad {
+        string adURI;
+        string dataURI; // ipfs URI to views data
+        bytes32 signatureRoot; // merkleRoot of signers
+        bytes32 audienceRoot; // merkleRoot of target audience
+        bool isActive;
+    }
+
     function setAd(
         string memory adURI,
         string memory dataURI,
-        string memory signatureRoot,
-        string memory audienceRoot
+        bytes32 signatureRoot,
+        bytes32 audienceRoot
     ) external;
 
-    function signAd() external pure;
+    function signAd(
+        uint256 id,
+        bytes32[] calldata proof
+    ) external;
+
+    function displayAd(
+        uint256 id
+    ) external view returns (Ad memory);
 
 }

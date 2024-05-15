@@ -5,17 +5,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IERCAd.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract ERCAd is IERCAd, ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _adIds;
-
-    struct Ad {
-        string adURI;
-        string dataURI; // ipfs URI to views data
-        string signatureRoot; // merkleroot of signed msgs
-        string audienceRoot; // merkleroot of target audience
-    }
 
     Ad private activeAd;
     mapping(uint256 => Ad) private ads;
@@ -30,8 +25,8 @@ contract ERCAd is IERCAd, ERC721, Ownable {
     function setAd(
         string memory adURI,
         string memory dataURI,
-        string memory signatureRoot,
-        string memory audienceRoot
+        bytes32 signatureRoot,
+        bytes32 audienceRoot
     ) public onlyOwner {
         _adIds.increment();
         uint256 adId = _adIds.current();
@@ -39,14 +34,30 @@ contract ERCAd is IERCAd, ERC721, Ownable {
             adURI: adURI,
             dataURI: dataURI,
             signatureRoot: signatureRoot,
-            audienceRoot: audienceRoot
+            audienceRoot: audienceRoot,
+            isActive: true
         });
         _mint(msg.sender, adId);
         activeAd = ads[adId];
     }
 
 
-    function signAd() public pure virtual override {
-        // Implementation needed
+    function signAd(uint256 id, bytes32[] calldata proof) external virtual override {
+        require(_exists(id), "ERC721: ad does not exist");
+
+        Ad storage ad = ads[id];
+        require(ad.isActive, "ERCAd: ad does not exist");
+
+        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+        require(MerkleProof.verify(proof, bytes32(ad.audienceRoot), leaf), "Sender not in audience");
+        require(MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf), "Sender already signed");
+
+        bytes memory concatenatedData = abi.encodePacked(ad.signatureRoot, msg.sender);
+        ad.signatureRoot = keccak256(concatenatedData);
     }
+
+    function displayAd(uint256 id) public view returns (Ad memory) {
+        return ads[id];
+    }
+
 }

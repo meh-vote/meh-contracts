@@ -1,0 +1,103 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IERCAd",
+  "sourceName": "contracts/IERCAd.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "displayAd",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "adURI",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "dataURI",
+              "type": "string"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "signatureRoot",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "audienceRoot",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isActive",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IERCAd.Ad",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "adURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "dataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "signatureRoot",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "audienceRoot",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setAd",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "proof",
+          "type": "bytes32[]"
+        }
+      ],
+      "name": "signAd",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

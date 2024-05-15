@@ -1019,10 +1019,10 @@
         "console"
       ]
     },
-    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/IERCPROJECTOR.sol": {
-      "lastModificationDate": 1715449663219,
-      "contentHash": "967d172318d0aadadf8b9483ff573da4",
-      "sourceName": "contracts/IERCPROJECTOR.sol",
+    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehNetworkV1.sol": {
+      "lastModificationDate": 1715745598346,
+      "contentHash": "89ea9c01e5af93c67df2570051acf176",
+      "sourceName": "contracts/MehNetworkV1.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -1048,14 +1048,20 @@
           }
         }
       },
-      "imports": [],
-      "versionPragmas": [],
-      "artifacts": []
+      "imports": [
+        "./ERCAd.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "MehNetworkV1"
+      ]
     },
-    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCProjector.sol": {
-      "lastModificationDate": 1715488152199,
-      "contentHash": "986df569e545108072aa37f8dd5d4058",
-      "sourceName": "contracts/ERCProjector.sol",
+    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd.sol": {
+      "lastModificationDate": 1715745821287,
+      "contentHash": "cc61ba8bd7d19044193567fad89f2908",
+      "sourceName": "contracts/ERCAd.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -1085,19 +1091,21 @@
         "@openzeppelin/contracts/token/ERC721/ERC721.sol",
         "@openzeppelin/contracts/access/Ownable.sol",
         "@openzeppelin/contracts/utils/Counters.sol",
-        "./IERCProjector.sol"
+        "./IERCAd.sol",
+        "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol",
+        "@openzeppelin/contracts/utils/Strings.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "ERCProjector"
+        "ERCAd"
       ]
     },
-    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/IERCProjector.sol": {
-      "lastModificationDate": 1715488166823,
-      "contentHash": "faa48569220aab7f68fa7ea198a87486",
-      "sourceName": "contracts/IERCProjector.sol",
+    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/IERCAd.sol": {
+      "lastModificationDate": 1715745703856,
+      "contentHash": "6a33140e8dd6169cc5bb76a4f5727c16",
+      "sourceName": "contracts/IERCAd.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -1128,13 +1136,13 @@
         "^0.8.24"
       ],
       "artifacts": [
-        "IERCProjector"
+        "IERCAd"
       ]
     },
-    "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehNetworkV1.sol": {
-      "lastModificationDate": 1715488005812,
-      "contentHash": "75f2f58001751d669722045678997fba",
-      "sourceName": "contracts/MehNetworkV1.sol",
+    "/Users/houseofhufflepuff/Development/meh-contracts/node_modules/@openzeppelin/contracts/utils/cryptography/MerkleProof.sol": {
+      "lastModificationDate": 1713563885944,
+      "contentHash": "1ccd3348ad628f1330ce36eb6a30618d",
+      "sourceName": "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol",
       "solcConfig": {
         "version": "0.8.24",
         "settings": {
@@ -1160,14 +1168,12 @@
           }
         }
       },
-      "imports": [
-        "./ERCProjector.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "MehNetworkV1"
+        "MerkleProof"
       ]
     }
   }

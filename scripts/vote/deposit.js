@@ -17,19 +17,19 @@ async function main() {
 
 
     const [owner] = await ethers.getSigners();
-    await meh.approve(MEH_VOTE, "250000000000000000000000000")
+    await meh.approve(MEH_VOTE, "852500000000000000000000000")
     let balance = await meh.balanceOf(owner.address);
     console.log(balance)
-
-    // await mehVote.depositMeh(
-    //     1,
-    //     4,
-    //     4,
-    // );
+//186285798
+//     await mehVote.depositMeh(
+//         1,
+//         7,
+//         341,
+//     );
 
     await mehVote.claim(
         1,
-        3,
+        7,
     );
 
 
