@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IERCAd",
-  "sourceName": "contracts/IERCAd.sol",
+  "sourceName": "contracts/ERCAd/IERCAd.sol",
   "abi": [
     {
       "inputs": [
