@@ -14,13 +14,13 @@ const MEH_HOODIE_01 = 100;
 //npx hardhat run scripts/royalty/metadata.js --network base
 function main() {
     for (let i = 0; i < MEH_DS_01; i++) {
-        const tokenId = 30000 + i;
+        const tokenId = 10000 + i;
         contract = {
-            "name": "MEH DIGITAL STICKERS 01",
+            "name": "MEH SHIRT 01",
             "description": "Meh Royalty Contract (MR1) for meh.store",
-            "productId": 3,
+            "productId": 1,
             "tokenId": tokenId,
-            "image": "https://gateway.pinata.cloud/ipfs/QmdHWAPKHtUGM9S43uKoGAUr5o6UNxKUg19e66x47FYvnw"
+            "image": "https://gateway.pinata.cloud/ipfs/QmRizCkUTuPVcqqDBqU5nUd7jVRM3uJryQyhHBVTpdpAn8"
         };
         const fileName = "data/mr1/" + tokenId;
         fs.writeFileSync(fileName, JSON.stringify(contract));

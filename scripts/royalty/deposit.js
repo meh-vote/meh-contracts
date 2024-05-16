@@ -5,7 +5,7 @@ const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_VOTE = process.env.MEH_VOTE;
 const MEH_ROYALTIES = process.env.MEH_ROYALTIES;
 
-//npx hardhat run scripts/royalty/product.js --network base
+//npx hardhat run scripts/royalty/deposit.js --network base
 async function main() {
     const Meh = await ethers.getContractFactory("Meh");
     const meh = await Meh.attach(MEH_TOKEN);
@@ -20,12 +20,26 @@ async function main() {
     const [owner] = await ethers.getSigners();
 
 
-    console.log("product 7 added");
+    //
+    // await mehVote.depositMehStore(
+    //     "16650000000000000000000000000"
+    // );
 
-    await mehRoyalties.createProduct(
-        8,
-        1000,
-    );
+    await meh.approve(MEH_ROYALTIES, "109600000000000000000000000")
+    for (let i = 30001; i <= 30229; i++) {
+        await mehRoyalties.depositMehToken(
+            i,
+            "125000000000000000000000"
+        );
+        console.log(i);
+    }
+
+
+
+    //16650000000
+    //198000000 shirt 01
+    //109600000 hat 01
+    //28625000 // stickers
 
 }
 

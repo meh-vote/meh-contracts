@@ -9,7 +9,7 @@ async function main() {
     const mehRoyalty = await MehRoyalty.attach(MEH_ROYALTY);
 
     await mehRoyalty.setBaseTokenURI(
-        "https://gateway.pinata.cloud/ipfs/QmU1eUK9PX4VGuwXyhQozFGbt56Rz2dj9eGXwDVattbYdE/"
+        "https://gateway.pinata.cloud/ipfs/Qmb3xsABBPfugt6CrumZuKQWPF381rpMAdfdpkHW6XVDsf/"
     );
 
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -48,16 +48,40 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         Ad storage ad = ads[id];
         require(ad.isActive, "ERCAd: ad does not exist");
 
+        require(!hasSignedAd(id, proof), "Sender already signed");
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-        require(MerkleProof.verify(proof, bytes32(ad.audienceRoot), leaf), "Sender not in audience");
         require(MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf), "Sender already signed");
 
-        bytes memory concatenatedData = abi.encodePacked(ad.signatureRoot, msg.sender);
-        ad.signatureRoot = keccak256(concatenatedData);
+
+        bytes memory signatures = abi.encodePacked(ad.signatureRoot, msg.sender);
+        ad.signatureRoot = keccak256(signatures);
     }
 
     function displayAd(uint256 id) public view returns (Ad memory) {
         return ads[id];
+    }
+
+    function isInAudience(uint256 id, bytes32[] calldata proof) public view returns (bool) {
+        require(_exists(id), "ERC721: ad does not exist");
+
+        Ad storage ad = ads[id];
+        require(ad.isActive, "ERCAd: ad does not exist");
+
+        if (ad.audienceRoot != bytes32(0)) {
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            return MerkleProof.verify(proof, bytes32(ad.audienceRoot), leaf);
+        }
+        return true;
+    }
+
+    function hasSignedAd(uint256 id, bytes32[] calldata proof) public view returns (bool) {
+        require(_exists(id), "ERC721: ad does not exist");
+
+        Ad storage ad = ads[id];
+        require(ad.isActive, "ERCAd: ad does not exist");
+
+        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+        return MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf);
     }
 
 }
