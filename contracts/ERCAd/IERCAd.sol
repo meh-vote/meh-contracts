@@ -7,7 +7,6 @@ interface IERCAd {
         string dataURI; // ipfs URI to views data
         bytes32 signatureRoot; // merkleRoot of signers
         bytes32 audienceRoot; // merkleRoot of target audience
-        bool isActive;
     }
 
     function setAd(
@@ -26,4 +25,13 @@ interface IERCAd {
         uint256 id
     ) external view returns (Ad memory);
 
+    function hasSignedAd(
+        uint256 id,
+        bytes32[] calldata proof
+    ) external view returns (bool);
+
+    function isInAudience(
+        uint256 id,
+        bytes32[] calldata proof
+    ) external view returns (bool);
 }

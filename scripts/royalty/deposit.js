@@ -26,7 +26,7 @@ async function main() {
     // );
 
     await meh.approve(MEH_ROYALTIES, "109600000000000000000000000")
-    for (let i = 30001; i <= 30229; i++) {
+    for (let i = 30228; i <= 30229; i++) {
         await mehRoyalties.depositMehToken(
             i,
             "125000000000000000000000"

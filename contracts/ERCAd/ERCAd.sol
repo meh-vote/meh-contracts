@@ -34,8 +34,7 @@ contract ERCAd is IERCAd, ERC721, Ownable {
             adURI: adURI,
             dataURI: dataURI,
             signatureRoot: signatureRoot,
-            audienceRoot: audienceRoot,
-            isActive: true
+            audienceRoot: audienceRoot
         });
         _mint(msg.sender, adId);
         activeAd = ads[adId];
@@ -46,8 +45,6 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         require(_exists(id), "ERC721: ad does not exist");
 
         Ad storage ad = ads[id];
-        require(ad.isActive, "ERCAd: ad does not exist");
-
         require(!hasSignedAd(id, proof), "Sender already signed");
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
         require(MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf), "Sender already signed");
@@ -65,8 +62,6 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         require(_exists(id), "ERC721: ad does not exist");
 
         Ad storage ad = ads[id];
-        require(ad.isActive, "ERCAd: ad does not exist");
-
         if (ad.audienceRoot != bytes32(0)) {
             bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
             return MerkleProof.verify(proof, bytes32(ad.audienceRoot), leaf);
@@ -78,8 +73,6 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         require(_exists(id), "ERC721: ad does not exist");
 
         Ad storage ad = ads[id];
-        require(ad.isActive, "ERCAd: ad does not exist");
-
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
         return MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf);
     }
