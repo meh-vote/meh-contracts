@@ -46,9 +46,11 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
         Ad storage ad = ads[id];
         require(!hasSignedAd(id, proof), "Sender already signed");
-        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-        require(MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf), "Sender already signed");
 
+        if (ad.audienceRoot != bytes32(0)) {
+            bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+            require(MerkleProof.verify(proof, ad.audienceRoot, leaf), "Sender not in target audience");
+        }
 
         bytes memory signatures = abi.encodePacked(ad.signatureRoot, msg.sender);
         ad.signatureRoot = keccak256(signatures);

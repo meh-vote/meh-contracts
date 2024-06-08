@@ -25,11 +25,11 @@ async function main() {
     //     "16650000000000000000000000000"
     // );
 
-    await meh.approve(MEH_ROYALTIES, "109600000000000000000000000")
-    for (let i = 30228; i <= 30229; i++) {
+    await meh.approve(MEH_ROYALTIES, "2952000000000000000000000000")
+    for (let i = 50001; i <= 50246; i++) {
         await mehRoyalties.depositMehToken(
             i,
-            "125000000000000000000000"
+            "12000000000000000000000000"
         );
         console.log(i);
     }
@@ -40,6 +40,8 @@ async function main() {
     //198000000 shirt 01
     //109600000 hat 01
     //28625000 // stickers
+    //2000000000 // skateboards
+    //2952000000 shirts 02
 
 }
 
