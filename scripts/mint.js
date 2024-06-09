@@ -18,7 +18,7 @@ async function main() {
     // jobu 0x10FeB6f3111197336bC64ad3D0A123F22719D58A
     // vinyls
     // josh 0x17b0C91e4F925F9f7522949835e1DC3B202cd838
-    await meh.mint("0xc0974aDf4d15DB9104eF68f01123d38a3a59bEc0", "10000000000000000000000000000");
+    await meh.mint("0xe07e62cd3d1717604a9392be15e54e5094850252", "10000000000000000000000000");
     console.log("done");
 
 
