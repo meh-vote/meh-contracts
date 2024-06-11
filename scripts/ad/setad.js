@@ -17,8 +17,8 @@ async function main() {
     const emptyRoot = ethers.constants.HashZero;
 
     await mehAd.setAd(
-        "https://meh.vote/ercad.html",
-        "https://meh.vote/ercad.html",
+        "https://meh.network",
+        "https://meh.network",
         emptyRoot,
         emptyRoot
     );

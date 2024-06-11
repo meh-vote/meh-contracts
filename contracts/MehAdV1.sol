@@ -12,7 +12,7 @@ contract MehAdV1 is ERCAd {
     }
 
     function signAd(uint256 id, bytes32[] calldata proof) public override {
-        require(!hasSigned[msg.sender], "Already signed an ad");
+        require(!hasSigned[msg.sender], "already signed ad");
 
         super.signAd(id, proof);
         (uint256 amtToTransfer, ) = adAmt();
@@ -21,10 +21,10 @@ contract MehAdV1 is ERCAd {
         hasSigned[msg.sender] = true;
     }
 
-
     function adAmt() public view returns (uint256, uint256) {
         uint256 ethBalance = msg.sender.balance;
-        uint256 amtToTransfer = (10000 + (ethBalance / 1 ether) * 100000) * 1 ether;
+        uint256 scale = 10 ** 18;
+        uint256 amtToTransfer = (25000 * scale + (25000 * ethBalance) / scale);
 
         if (amtToTransfer > MAX_AMT) {
             amtToTransfer = MAX_AMT;
