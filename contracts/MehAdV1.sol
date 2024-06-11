@@ -24,7 +24,7 @@ contract MehAdV1 is ERCAd {
     function adAmt() public view returns (uint256, uint256) {
         uint256 ethBalance = msg.sender.balance;
         uint256 scale = 10 ** 18;
-        uint256 amtToTransfer = (25000 * scale + (25000 * ethBalance) / scale);
+        uint256 amtToTransfer = (25000 * scale + (25000 * scale * ethBalance) / scale);
 
         if (amtToTransfer > MAX_AMT) {
             amtToTransfer = MAX_AMT;
