@@ -5,10 +5,9 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-import "./ERCAd/ERCAd.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract MehAdV2 is CCIPReceiver, ERCAd {
+contract MehAdV2 is CCIPReceiver {
     IERC20 public mehToken;
     uint256 private constant WHALE_AMT = 250000 * 10 ** 18;
     uint256 private constant DEFAULT_AMT = 500000 * 10 ** 18;
@@ -25,20 +24,12 @@ contract MehAdV2 is CCIPReceiver, ERCAd {
         address _mainnetContractAddress,
         address _router,
         address _linkToken,
-        string memory name,
-        string memory symbol,
         address mehTokenAddress
-    ) CCIPReceiver(_router) ERCAd(name, symbol) {
+    ) CCIPReceiver(_router) {
         mainnetContractAddress = _mainnetContractAddress;
         router = IRouterClient(_router);
         linkToken = _linkToken;
         mehToken = IERC20(mehTokenAddress);
-    }
-
-    function signAd(uint256 id, bytes32[] calldata proof) public override {
-        require(!hasSigned[msg.sender], "already signed ad");
-        super.signAd(id, proof);
-        hasSigned[msg.sender] = true;
     }
 
     function getLinkBalance() public {

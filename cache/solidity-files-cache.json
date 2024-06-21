@@ -1057,8 +1057,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd/ERCAd.sol": {
-      "lastModificationDate": 1717812362112,
-      "contentHash": "c07b921aafe9fc8aa134c6f4dfd20629",
+      "lastModificationDate": 1718857589794,
+      "contentHash": "f4aef0cb83cfd012275a95f18988684a",
       "sourceName": "contracts/ERCAd/ERCAd.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -1176,8 +1176,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehAdV2.sol": {
-      "lastModificationDate": 1718852803172,
-      "contentHash": "ac2eda8a9e58344226049c2b81ad8695",
+      "lastModificationDate": 1719010901801,
+      "contentHash": "7a945061cb9b127ceba059ba3929ded1",
       "sourceName": "contracts/MehAdV2.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -1209,11 +1209,10 @@
         "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol",
         "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol",
         "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol",
-        "./ERCAd/ERCAd.sol",
         "@openzeppelin/contracts/token/ERC20/IERC20.sol"
       ],
       "versionPragmas": [
-        "^0.8.19"
+        "^0.8.24"
       ],
       "artifacts": [
         "MehAdV2"
