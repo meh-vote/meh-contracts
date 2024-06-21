@@ -40,7 +40,6 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         activeAd = ads[adId];
     }
 
-
     function signAd(uint256 id, bytes32[] calldata proof) public virtual {
         require(_exists(id), "ERC721: ad does not exist");
 

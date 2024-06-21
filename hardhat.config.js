@@ -38,18 +38,17 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: {
-      base: "1EE4Q45Y7PT97X1AR321WIUW6U9WZEMSUW"
-    },
+    apiKey: "1EE4Q45Y7PT97X1AR321WIUW6U9WZEMSUW",
+    apiURL: "https://api.basescan.org/api",
     customChains: [
       {
         network: "base",
         chainId: 8453,
         urls: {
-          apiURL: "https://mainnet.base.org",
+          apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org"
         }
-      }
+      },
     ]
   }
 };
