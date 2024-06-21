@@ -7,6 +7,19 @@ import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/
 import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+interface IERCAd {
+    struct Ad {
+        string adURI;
+        string dataURI;
+        bytes32 signatureRoot;
+        bytes32 audienceRoot;
+    }
+
+    function signAd(uint256 id, bytes32[] calldata proof) external;
+    function displayAd(uint256 id) external view returns (Ad memory);
+    function hasSignedAd(uint256 id, bytes32[] calldata proof) external view returns (bool);
+}
+
 contract MehAdV2 is CCIPReceiver {
     IERC20 public mehToken;
     uint256 private constant WHALE_AMT = 250000 * 10 ** 18;
@@ -16,6 +29,7 @@ contract MehAdV2 is CCIPReceiver {
     address public mainnetContractAddress;
     IRouterClient public router;
     address public linkToken;
+    IERCAd public ercAdContract;
 
     event MessageReceived(bytes32 messageId, uint64 sourceChainSelector, address sender, uint256 balance);
     event MessageSent(bytes32 messageId);
@@ -24,12 +38,14 @@ contract MehAdV2 is CCIPReceiver {
         address _mainnetContractAddress,
         address _router,
         address _linkToken,
-        address mehTokenAddress
+        address _mehTokenAddress,
+        address _ercAdAddress
     ) CCIPReceiver(_router) {
         mainnetContractAddress = _mainnetContractAddress;
         router = IRouterClient(_router);
         linkToken = _linkToken;
-        mehToken = IERC20(mehTokenAddress);
+        mehToken = IERC20(_mehTokenAddress);
+        ercAdContract = IERCAd(_ercAdAddress);
     }
 
     function getLinkBalance() public {
@@ -60,5 +76,17 @@ contract MehAdV2 is CCIPReceiver {
         mehToken.transfer(msg.sender, amtToTransfer);
 
         emit MessageReceived(message.messageId, message.sourceChainSelector, sender, balance);
+    }
+
+    function signAd(uint256 id, bytes32[] calldata proof) external {
+        ercAdContract.signAd(id, proof);
+    }
+
+    function displayAd(uint256 id) external view returns (IERCAd.Ad memory) {
+        return ercAdContract.displayAd(id);
+    }
+
+    function hasSignedAd(uint256 id, bytes32[] calldata proof) external view returns (bool) {
+        return ercAdContract.hasSignedAd(id, proof);
     }
 }
