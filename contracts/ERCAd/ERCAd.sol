@@ -14,6 +14,7 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
     Ad private activeAd;
     mapping(uint256 => Ad) private ads;
+    mapping(address => bool) public hasSigned;
 
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {}
 
@@ -42,10 +43,9 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
     function signAd(uint256 id, bytes32[] calldata proof) public virtual {
         require(_exists(id), "ERC721: ad does not exist");
+        require(!hasSigned[msg.sender], "already signed ad");
 
         Ad storage ad = ads[id];
-        require(!hasSignedAd(id, proof), "Sender already signed");
-
         if (ad.audienceRoot != bytes32(0)) {
             bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
             require(MerkleProof.verify(proof, ad.audienceRoot, leaf), "Sender not in target audience");
@@ -53,6 +53,7 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
         bytes memory signatures = abi.encodePacked(ad.signatureRoot, msg.sender);
         ad.signatureRoot = keccak256(signatures);
+        hasSigned[msg.sender] = true;
     }
 
     function displayAd(uint256 id) public view returns (Ad memory) {
