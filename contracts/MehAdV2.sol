@@ -20,8 +20,8 @@ interface IERCAd {
 }
 
 contract MehAdV2 is CCIPReceiver {
-    uint256 private constant WHALE_AMT = 250000 * 10 ** 18;
-    uint256 private constant DEFAULT_AMT = 500000 * 10 ** 18;
+    uint256 private constant WHALE_AMT = 500000 * 10 ** 18;
+    uint256 private constant DEFAULT_AMT = 50000 * 10 ** 18;
 
     address public mainnetContractAddress;
     IRouterClient public router;
@@ -70,7 +70,7 @@ contract MehAdV2 is CCIPReceiver {
         balance += linkToken.balanceOf(address(this));
 
         uint256 amtToTransfer = DEFAULT_AMT;
-        if (balance >= 1) {
+        if (balance >= (1 * 10 ** 18)) {
             amtToTransfer += WHALE_AMT;
         }
         mehToken.transfer(msg.sender, amtToTransfer);
@@ -80,6 +80,7 @@ contract MehAdV2 is CCIPReceiver {
 
     function signAd(uint256 id, bytes32[] calldata proof) external {
         ercAdContract.signAd(id, proof);
+        getLinkBalance();
     }
 
     function displayAd(uint256 id) external view returns (IERCAd.Ad memory) {
