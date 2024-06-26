@@ -35,6 +35,18 @@ module.exports = {
       accounts: [`0x${PRIVATE_KEY}`],
       gas: "auto",
       gasMultiplier: 1.5
+    },
+    sepolia: {
+      url: API_URL,
+      accounts: [`0x${PRIVATE_KEY}`],
+      gas: "auto",
+      gasMultiplier: 1.5
+    },
+    mainnet: {
+      url: API_URL,
+      accounts: [`0x${PRIVATE_KEY}`],
+      gas: "auto",
+      gasMultiplier: 1.5
     }
   },
   etherscan: {

@@ -2,6 +2,116 @@
   "version": "3.4",
   "log": [
     {
+      "contracts/CCIP/MehCCIPLink.sol:IERC20": {
+        "src": "contracts/CCIP/MehCCIPLink.sol:4",
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "balanceOf(address)"
+        ],
+        "linkReferences": [],
+        "errors": [],
+        "layout": {
+          "storage": [],
+          "types": {},
+          "layoutVersion": "1.2",
+          "flat": false,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.24"
+      },
+      "contracts/CCIP/MehCCIPLink.sol:MehCCIPLink": {
+        "src": "contracts/CCIP/MehCCIPLink.sol:8",
+        "version": {
+          "withMetadata": "d4f51f0bd99c34cc76383f76c7ec0c5cf1f84341441dae3f36bbc750ecef07fd",
+          "withoutMetadata": "f926e2881270bb33d30bc235af8888dc8be68959b143ce99f3002bacfe3a7b8d",
+          "linkedWithoutMetadata": "f926e2881270bb33d30bc235af8888dc8be68959b143ce99f3002bacfe3a7b8d"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "(address)",
+          "getLinkBalance()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "MehCCIPLink",
+            "src": "contracts/CCIP/MehCCIPLink.sol:11"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "linkToken",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_contract(IERC20)9",
+              "contract": "MehCCIPLink",
+              "src": "contracts/CCIP/MehCCIPLink.sol:9"
+            }
+          ],
+          "types": {
+            "t_contract(IERC20)9": {
+              "label": "contract IERC20",
+              "numberOfBytes": "20"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.24"
+      }
+    },
+    {
+      "contracts/CCIP/MehCCIPLink.sol:MehCCIPLink": {
+        "src": "contracts/CCIP/MehCCIPLink.sol:4",
+        "version": {
+          "withMetadata": "6287b0574f605ea566c992a2be522f9726f7de8e01d2d17bf227b9b0ecc889d3",
+          "withoutMetadata": "519c88a60df86a223fca6204268dc6f9577b32d82b5c6c03bf019495df446206",
+          "linkedWithoutMetadata": "519c88a60df86a223fca6204268dc6f9577b32d82b5c6c03bf019495df446206"
+        },
+        "inherit": [],
+        "libraries": [],
+        "methods": [
+          "(uint256)",
+          "getLinkBalance()"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "MehCCIPLink",
+            "src": "contracts/CCIP/MehCCIPLink.sol:7"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "linkBalance",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_uint256",
+              "contract": "MehCCIPLink",
+              "src": "contracts/CCIP/MehCCIPLink.sol:5"
+            }
+          ],
+          "types": {
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.24"
+      }
+    },
+    {
       "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol:CCIPReceiver": {
         "src": "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol:11",
         "inherit": [

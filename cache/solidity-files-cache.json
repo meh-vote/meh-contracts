@@ -1450,8 +1450,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/CCIP/MehCCIPLink.sol": {
-      "lastModificationDate": 1718849618114,
-      "contentHash": "b1acff7b4b4e498cbccbc22dcc0c5fd6",
+      "lastModificationDate": 1719370969196,
+      "contentHash": "9a3e5546bf1845a642d1b6213f4bbfae",
       "sourceName": "contracts/CCIP/MehCCIPLink.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -1480,9 +1480,10 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.19"
+        "^0.8.24"
       ],
       "artifacts": [
+        "IERC20",
         "MehCCIPLink"
       ]
     }
