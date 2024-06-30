@@ -1,7 +1,10 @@
 const { ethers } = require("hardhat");
 
+const LINK_TOKEN = process.env.LINK_TOKEN;
 
 //npx hardhat run scripts/ad/cciplinkdeploy.js --network sepolia
+//npx hardhat run scripts/ad/cciplinkdeploy.js --network mainnet
+
 async function main() {
     const [deployer] = await ethers.getSigners();
 
@@ -17,7 +20,7 @@ async function main() {
 
     const MehCCIPLink = await ethers.getContractFactory("MehCCIPLink");
     const mehCCIPLink = await MehCCIPLink.deploy(
-        "0x779877A7B0D9E8603169DdbD7836e478b4624789"
+        LINK_TOKEN
     );
     console.log("mehCCIPLink deployed to address:", mehCCIPLink.address);
 

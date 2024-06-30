@@ -1057,7 +1057,7 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd/ERCAd.sol": {
-      "lastModificationDate": 1719016592869,
+      "lastModificationDate": 1719695128510,
       "contentHash": "3de7f7dccd424f4432bd83ced1094eea",
       "sourceName": "contracts/ERCAd/ERCAd.sol",
       "solcConfig": {
@@ -1101,7 +1101,7 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd/IERCAd.sol": {
-      "lastModificationDate": 1715866297853,
+      "lastModificationDate": 1719695109365,
       "contentHash": "27ec95ce7e01692e11cf81bd43d3ba9f",
       "sourceName": "contracts/ERCAd/IERCAd.sol",
       "solcConfig": {
@@ -1138,7 +1138,7 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehAdV1.sol": {
-      "lastModificationDate": 1719016802674,
+      "lastModificationDate": 1719695114578,
       "contentHash": "3c3995af123b1b2e07094c3c2b638bdf",
       "sourceName": "contracts/MehAdV1.sol",
       "solcConfig": {
@@ -1176,8 +1176,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/MehAdV2.sol": {
-      "lastModificationDate": 1719025498805,
-      "contentHash": "b73ab04213d91ebda5ec36ceb1949849",
+      "lastModificationDate": 1719703734395,
+      "contentHash": "10e6ac2f378947c174bd4c97e259afa8",
       "sourceName": "contracts/MehAdV2.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -1216,6 +1216,7 @@
       ],
       "artifacts": [
         "IERCAd",
+        "ITargetContract",
         "MehAdV2"
       ]
     },

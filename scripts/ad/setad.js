@@ -12,8 +12,7 @@ async function main() {
     const Meh = await ethers.getContractFactory("Meh");
     const meh = await Meh.attach(MEH_TOKEN);
 
-    await meh.mint(MEH_AD_V2, "1000000000000000000000000000");
-
+    await meh.mint(MEH_AD_V2, "100000000000000000000000000");
 
     const ERCAd = await ethers.getContractFactory("ERCAd");
     const ercAd = await ERCAd.attach(ERC_AD);

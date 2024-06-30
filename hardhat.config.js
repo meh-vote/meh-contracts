@@ -27,14 +27,14 @@ module.exports = {
     base: {
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
-      gas: "auto",
-      gasMultiplier: 1.1,
+      gas: 8000000,
+      gasPrice: 3000000000,
     },
     basesepolia: {
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
-      gas: "auto",
-      gasMultiplier: 1.5
+      gas: 8000000,
+      gasPrice: 3000000000,
     },
     sepolia: {
       url: API_URL,
@@ -46,7 +46,7 @@ module.exports = {
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
       gas: "auto",
-      gasMultiplier: 1.5
+      gasMultiplier: 1.1
     }
   },
   etherscan: {

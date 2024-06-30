@@ -19,6 +19,10 @@ interface IERCAd {
     function displayAd(uint256 id) external view returns (Ad memory);
 }
 
+interface ITargetContract {
+    function getLinkBalance() external view returns (uint256);
+}
+
 contract MehAdV2 is CCIPReceiver {
     uint256 private constant WHALE_AMT = 500000 * 10 ** 18;
     uint256 private constant DEFAULT_AMT = 50000 * 10 ** 18;
@@ -28,39 +32,50 @@ contract MehAdV2 is CCIPReceiver {
     IERC20 public mehToken;
     IERC20 public linkToken;
     IERCAd public ercAdContract;
+    uint64 public destinationChainSelector;
 
     event MessageReceived(bytes32 messageId, uint64 sourceChainSelector, address sender, uint256 balance);
     event MessageSent(bytes32 messageId);
+    event ErrorOccurred(string reason);
 
     constructor(
         address _mainnetContractAddress,
         address _router,
         address _linkTokenAddress,
         address _mehTokenAddress,
-        address _ercAdAddress
+        address _ercAdAddress,
+        uint64 _destinationChainSelector
     ) CCIPReceiver(_router) {
         mainnetContractAddress = _mainnetContractAddress;
         router = IRouterClient(_router);
         mehToken = IERC20(_mehTokenAddress);
         linkToken = IERC20(_linkTokenAddress);
         ercAdContract = IERCAd(_ercAdAddress);
+        destinationChainSelector = _destinationChainSelector;
     }
 
     function getLinkBalance() public {
-        bytes memory data = abi.encodeWithSignature("getLinkBalance()");
+        bytes4 selector = bytes4(keccak256(bytes("getLinkBalance()")));
+        bytes memory data = abi.encodeWithSelector(selector);
         Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](0);
+        bytes memory receiverBytes = abi.encodePacked(mainnetContractAddress);
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            receiver: abi.encode(mainnetContractAddress),
+            receiver: receiverBytes,
             data: data,
             tokenAmounts: tokenAmounts,
             extraArgs: "",
             feeToken: address(0)
         });
 
-        uint256 fee = router.getFee(0 /*destinationChainSelector*/, message);
-        bytes32 messageId = router.ccipSend{value: fee}(0 /*destinationChainSelector*/, message);
+        uint256 fee = router.getFee(destinationChainSelector, message);
 
-        emit MessageSent(messageId);
+        try router.ccipSend{value: fee}(destinationChainSelector, message) returns (bytes32 messageId) {
+            emit MessageSent(messageId);
+        } catch Error(string memory reason) {
+            emit ErrorOccurred(reason);
+        } catch {
+            emit ErrorOccurred("Unknown error occurred");
+        }
     }
 
     function _ccipReceive(Client.Any2EVMMessage memory message) internal override {
