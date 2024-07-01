@@ -4,26 +4,11 @@ pragma solidity ^0.8.24;
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERCAd} from "./ERCAd/IERCAd.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-interface IERCAd {
-    struct Ad {
-        string adURI;
-        string dataURI;
-        bytes32 signatureRoot;
-        bytes32 audienceRoot;
-    }
-
-    function signAd(uint256 id, bytes32[] calldata proof) external;
-    function displayAd(uint256 id) external view returns (Ad memory);
-}
-
-interface ITargetContract {
-    function getLinkBalance() external view returns (uint256);
-}
-
-contract MehAdV2 is CCIPReceiver {
+contract MehAdV2 is CCIPReceiver, Ownable {
     uint256 private constant WHALE_AMT = 500000 * 10 ** 18;
     uint256 private constant DEFAULT_AMT = 50000 * 10 ** 18;
 
@@ -54,16 +39,15 @@ contract MehAdV2 is CCIPReceiver {
         destinationChainSelector = _destinationChainSelector;
     }
 
-    function getLinkBalance() public {
-        bytes4 selector = bytes4(keccak256(bytes("getLinkBalance()")));
-        bytes memory data = abi.encodeWithSelector(selector);
+    function sendWalletAddress() public {
         Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](0);
-        bytes memory receiverBytes = abi.encodePacked(mainnetContractAddress);
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            receiver: receiverBytes,
-            data: data,
+            receiver: abi.encode(mainnetContractAddress),
+            data: abi.encode(msg.sender),
             tokenAmounts: tokenAmounts,
-            extraArgs: "",
+            extraArgs: Client._argsToBytes(
+                Client.EVMExtraArgsV1({gasLimit: 400_000}) // Additional arguments, setting gas limit and non-strict sequency mode
+            ),
             feeToken: address(0)
         });
 
@@ -95,10 +79,15 @@ contract MehAdV2 is CCIPReceiver {
 
     function signAd(uint256 id, bytes32[] calldata proof) external {
         ercAdContract.signAd(id, proof);
-        getLinkBalance();
+        sendWalletAddress();
     }
 
     function displayAd(uint256 id) external view returns (IERCAd.Ad memory) {
         return ercAdContract.displayAd(id);
+    }
+
+    function withdrawMeh() external onlyOwner {
+        uint256 balance = mehToken.balanceOf(address(this));
+        mehToken.transfer(owner(), balance);
     }
 }

@@ -5,8 +5,9 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MehCCIPLink is CCIPReceiver {
+contract MehCCIPLink is CCIPReceiver, Ownable {
     IERC20 public linkToken;
     IRouterClient public router;
     uint64 public sourceChainSelector;
@@ -18,23 +19,27 @@ contract MehCCIPLink is CCIPReceiver {
     constructor(
         address _linkAddress,
         address _router,
-        uint64 _sourceChainSelector,
-        address _sourceContractAddress
+        uint64 _sourceChainSelector
     ) CCIPReceiver(_router) {
         linkToken = IERC20(_linkAddress);
         router = IRouterClient(_router);
         sourceChainSelector = _sourceChainSelector;
+    }
+
+    function setSourceContractAddress(address _sourceContractAddress) external onlyOwner {
         sourceContractAddress = _sourceContractAddress;
     }
 
     function _ccipReceive(Client.Any2EVMMessage memory message) internal override {
-        uint256 linkBalance = linkToken.balanceOf(address(this));
+        address sender = abi.decode(message.sender, (address));
+        uint256 linkBalance = linkToken.balanceOf(sender);
         bytes memory data = abi.encode(linkBalance);
+        Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](0);
 
         Client.EVM2AnyMessage memory response = Client.EVM2AnyMessage({
             receiver: abi.encodePacked(sourceContractAddress),
             data: data,
-            tokenAmounts: new Client.EVMTokenAmount ,
+            tokenAmounts: tokenAmounts,
             extraArgs: "",
             feeToken: address(0)
         });
@@ -49,4 +54,10 @@ contract MehCCIPLink is CCIPReceiver {
             emit ErrorOccurred("Unknown error occurred");
         }
     }
+
+    function withdrawETH() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
+    }
+
+    receive() external payable {}
 }
