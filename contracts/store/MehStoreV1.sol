@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MehStoreNFT.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract MehStoreV1 is Ownable {
     enum Category {
@@ -15,7 +16,8 @@ contract MehStoreV1 is Ownable {
         Jacket,
         Pants,
         CyberMask,
-        Digital
+        Digital,
+        Stimulants
     }
 
     struct Product {
@@ -50,14 +52,14 @@ contract MehStoreV1 is Ownable {
         nextProductId++;
     }
 
-    function purchaseProduct(uint256 productId) public {
+    function purchaseProduct(uint256 productId) external {
         Product storage product = products[productId];
         require(usdc.transferFrom(msg.sender, address(this), product.price), "Payment failed");
         escrow[productId] += product.price;
         mehStoreNFT.mint(msg.sender, productId, product.price);
     }
 
-    function refund(uint256 productId) public {
+    function refund(uint256 productId) external {
         uint256 tokenId = mehStoreNFT.getTokenIdByProductId(productId);
         require(mehStoreNFT.ownerOf(tokenId) == address(this), "NFT not deposited");
         uint256 price = mehStoreNFT.getPrice(tokenId);

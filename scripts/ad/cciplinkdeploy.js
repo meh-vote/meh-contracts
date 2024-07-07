@@ -17,13 +17,13 @@ async function main() {
     const gasPrice = await deployer.getGasPrice();
     console.log(`current gas price: ${gasPrice}`);
 
-    const MehCCIPLink = await ethers.getContractFactory("MehCCIPLink");
+    const MehCCIPLink = await ethers.getContractFactory("MehCrossChain");
     const mehCCIPLink = await MehCCIPLink.deploy(
         LINK_TOKEN,
         CCIP_ETH_ROUTER,
         CHAIN_ETH_SELECTOR
     );
-    console.log("mehCCIPLink deployed to address:", mehCCIPLink.address);
+    console.log("mehCrossChain deployed to address:", mehCCIPLink.address);
 
 }
 

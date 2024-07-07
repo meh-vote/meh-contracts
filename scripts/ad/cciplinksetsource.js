@@ -8,7 +8,7 @@ const MEH_AD_V2 = process.env.MEH_AD_V2;
 //npx hardhat run scripts/ad/cciplinksetsource.js --network mainnet
 //npx hardhat run scripts/ad/cciplinksetsource.js --network sepolia
 async function main() {
-    const MehCCIP = await ethers.getContractFactory("MehCCIPLink");
+    const MehCCIP = await ethers.getContractFactory("MehCrossChain.sol");
     const mehCCIP = await MehCCIP.attach(MEH_CCIP_LINK);
 
 

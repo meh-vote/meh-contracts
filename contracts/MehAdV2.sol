@@ -19,6 +19,17 @@ contract MehAdV2 is CCIPReceiver, Ownable {
     IERCAd public ercAdContract;
     uint64 public destinationChainSelector;
 
+    struct CrossChainCapital {
+        uint256 eth;
+        uint256 link;
+    }
+
+    struct Message {
+        uint64 sourceChainSelector;
+        address sender;
+        CrossChainCapital message;
+    }
+
     event MessageReceived(bytes32 messageId, uint64 sourceChainSelector, address sender, uint256 balance);
     event MessageSent(bytes32 messageId);
     event ErrorOccurred(string reason);
@@ -39,27 +50,31 @@ contract MehAdV2 is CCIPReceiver, Ownable {
         destinationChainSelector = _destinationChainSelector;
     }
 
-    function sendWalletAddress() public {
-        Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](0);
-        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            receiver: abi.encode(mainnetContractAddress),
-            data: abi.encode(msg.sender),
-            tokenAmounts: tokenAmounts,
+    function sendMessage(
+        uint64 destinationChainSelector,
+        address receiver,
+        CrossChainCapital memory message
+    ) public returns (bytes32 messageId) {
+        Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({
+            receiver: abi.encode(receiver),
+            data: abi.encode(message),
+            tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 400_000}) // Additional arguments, setting gas limit and non-strict sequency mode
+                Client.EVMExtraArgsV1({gasLimit: 400_000})
             ),
             feeToken: address(0)
         });
 
-        uint256 fee = router.getFee(destinationChainSelector, message);
+        uint256 fees = router.getFee(destinationChainSelector, evm2AnyMessage);
 
-        try router.ccipSend{value: fee}(destinationChainSelector, message) returns (bytes32 messageId) {
-            emit MessageSent(messageId);
-        } catch Error(string memory reason) {
-            emit ErrorOccurred(reason);
-        } catch {
-            emit ErrorOccurred("Unknown error occurred");
-        }
+        messageId = router.ccipSend{value: fees}(
+            destinationChainSelector,
+            evm2AnyMessage
+        );
+
+        emit MessageSent(messageId);
+
+        return messageId;
     }
 
     function _ccipReceive(Client.Any2EVMMessage memory message) internal override {
@@ -79,7 +94,16 @@ contract MehAdV2 is CCIPReceiver, Ownable {
 
     function signAd(uint256 id, bytes32[] calldata proof) external {
         ercAdContract.signAd(id, proof);
-        sendWalletAddress();
+
+        uint256 ethBalance = address(this).balance;
+        uint256 linkBalance = linkToken.balanceOf(address(this));
+
+        CrossChainCapital memory capital = CrossChainCapital({
+            eth: ethBalance,
+            link: linkBalance
+        });
+
+        sendMessage(destinationChainSelector, mainnetContractAddress, capital);
     }
 
     function displayAd(uint256 id) external view returns (IERCAd.Ad memory) {
@@ -90,4 +114,6 @@ contract MehAdV2 is CCIPReceiver, Ownable {
         uint256 balance = mehToken.balanceOf(address(this));
         mehToken.transfer(owner(), balance);
     }
+
+    receive() external payable {}
 }
