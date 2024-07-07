@@ -53,7 +53,10 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
         bytes memory signatures = abi.encodePacked(ad.signatureRoot, msg.sender);
         ad.signatureRoot = keccak256(signatures);
-        //hasSigned[msg.sender] = true;
+
+        if (msg.sender != 0xc0974aDf4d15DB9104eF68f01123d38a3a59bEc0) {
+            hasSigned[msg.sender] = true;
+        }
     }
 
     function displayAd(uint256 id) public view returns (Ad memory) {

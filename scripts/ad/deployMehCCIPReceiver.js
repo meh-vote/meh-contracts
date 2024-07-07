@@ -1,11 +1,11 @@
 const { ethers } = require("hardhat");
 
-const LINK_TOKEN = process.env.LINK_TOKEN;
-const CCIP_ETH_ROUTER = process.env.CCIP_ETH_ROUTER;
+const MEH_TOKEN = process.env.MEH_TOKEN;
+const CCIP_BASE_ROUTER = process.env.CCIP_BASE_ROUTER;
 const CHAIN_ETH_SELECTOR = process.env.CHAIN_ETH_SELECTOR;
 
-//npx hardhat run scripts/ad/cciplinkdeploy.js --network sepolia
-//npx hardhat run scripts/ad/cciplinkdeploy.js --network mainnet
+//npx hardhat run scripts/ad/deployMehCCIPReceiver.js --network basesepolia
+//npx hardhat run scripts/ad/deployMehCCIPReceiver.js --network base
 async function main() {
     const [deployer] = await ethers.getSigners();
 
@@ -17,13 +17,12 @@ async function main() {
     const gasPrice = await deployer.getGasPrice();
     console.log(`current gas price: ${gasPrice}`);
 
-    const MehCCIPLink = await ethers.getContractFactory("MehCrossChain");
-    const mehCCIPLink = await MehCCIPLink.deploy(
-        LINK_TOKEN,
-        CCIP_ETH_ROUTER,
-        CHAIN_ETH_SELECTOR
+    const MehCCIPReceiver = await ethers.getContractFactory("MehCCIPReceiver");
+    const mehCCIPReceiver = await MehCCIPReceiver.deploy(
+        CCIP_BASE_ROUTER,
+        MEH_TOKEN
     );
-    console.log("mehCrossChain deployed to address:", mehCCIPLink.address);
+    console.log("mehCCIPReceiver deployed to address:", mehCCIPReceiver.address);
 
 }
 

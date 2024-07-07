@@ -21,3 +21,14 @@ npx hardhat verify --network base 0xa999542c71FEbba77602fBc2F784bA9BA0C850F6
 npx hardhat verify --network basesepolia --constructor-args scripts/verify/meh-faucet-v1-args.js 0xEf4C3545edf08563bbC112D5CEf0A10B396Ea12E
 
 ```
+
+## deploy ccip
+```
+deploy steps
+X deploy receiver
+X deploy
+X set ad
+X put meh in receiver contract
+X put eth in sender contract
+sign ad
+```

@@ -5,11 +5,11 @@ const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_AD_V1 = process.env.MEH_AD_V1;
 const MEH_AD_V2 = process.env.MEH_AD_V2;
 
-//npx hardhat run scripts/ad/signad.js --network base
-//npx hardhat run scripts/ad/signad.js --network basesepolia
+//npx hardhat run scripts/ad/signad.js --network mainnet
+//npx hardhat run scripts/ad/signad.js --network sepolia
 async function main() {
-    const Meh = await ethers.getContractFactory("Meh");
-    const meh = await Meh.attach(MEH_TOKEN);
+    // const Meh = await ethers.getContractFactory("Meh");
+    // const meh = await Meh.attach(MEH_TOKEN);
 
     const MehAd = await ethers.getContractFactory("MehAdV2");
     const mehAd = await MehAd.attach(MEH_AD_V2);

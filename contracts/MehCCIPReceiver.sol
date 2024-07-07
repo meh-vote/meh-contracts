@@ -7,18 +7,16 @@ import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MehCrossChain is CCIPReceiver, Ownable {
-    IERC20 public linkToken;
+contract MehCCIPReceiver is CCIPReceiver, Ownable {
+    uint256 private constant WHALE_AMT = 500000 * 10 ** 18;
+    uint256 private constant DEFAULT_AMT = 50000 * 10 ** 18;
+    IERC20 public mehToken;
     IRouterClient public router;
-    uint64 public sourceChainSelector;
-    address public sourceContractAddress;
 
-    event MessageSent(bytes32 messageId);
     event MessageReceived(
         bytes32 messageId,
         address sender
     );
-    event ErrorOccurred(string reason);
 
     struct CrossChainCapital {
         uint256 eth;
@@ -32,35 +30,31 @@ contract MehCrossChain is CCIPReceiver, Ownable {
     }
 
     constructor(
-        address _linkAddress,
         address _router,
-        uint64 _sourceChainSelector
+        address _mehTokenAddress
     ) CCIPReceiver(_router) {
-        linkToken = IERC20(_linkAddress);
         router = IRouterClient(_router);
-        sourceChainSelector = _sourceChainSelector;
+        mehToken = IERC20(_mehTokenAddress);
     }
 
-    function setSourceContractAddress(address _sourceContractAddress) external onlyOwner {
-        sourceContractAddress = _sourceContractAddress;
-    }
-
-    /// handle a received message
     function _ccipReceive(
         Client.Any2EVMMessage memory any2EvmMessage
     ) internal override {
         bytes32 messageId = any2EvmMessage.messageId; // fetch the messageId
-        uint64 sourceChainSelector = any2EvmMessage.sourceChainSelector; // fetch the source chain identifier (aka selector)
         address sender = abi.decode(any2EvmMessage.sender, (address)); // abi-decoding of the sender address
-        //CrossChainCapital memory message = abi.decode(any2EvmMessage.data, (CrossChainCapital)); // abi-decoding of the sent string message
+        CrossChainCapital memory message = abi.decode(any2EvmMessage.data, (CrossChainCapital)); // abi-decoding of the sent string message
 
+        uint256 amtToTransfer = DEFAULT_AMT;
+        if (message.link >= (1 * 10 ** 18)) {
+            amtToTransfer += WHALE_AMT;
+        }
+        mehToken.transfer(msg.sender, amtToTransfer);
 
         emit MessageReceived(messageId, sender);
     }
 
-    function withdrawETH() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+    function withdrawMeh() external onlyOwner {
+        uint256 balance = mehToken.balanceOf(address(this));
+        mehToken.transfer(owner(), balance);
     }
-
-    receive() external payable {}
 }

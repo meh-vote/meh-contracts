@@ -6,13 +6,13 @@ const MEH_AD_V2 = process.env.MEH_AD_V2;
 const ERC_AD = process.env.ERC_AD;
 
 
-//npx hardhat run scripts/ad/setad.js --network base
-//npx hardhat run scripts/ad/setad.js --network basesepolia
+//npx hardhat run scripts/ad/setad.js --network mainnet
+//npx hardhat run scripts/ad/setad.js --network sepolia
 async function main() {
-    const Meh = await ethers.getContractFactory("Meh");
-    const meh = await Meh.attach(MEH_TOKEN);
-
-    await meh.mint(MEH_AD_V2, "100000000000000000000000000");
+    // const Meh = await ethers.getContractFactory("Meh");
+    // const meh = await Meh.attach(MEH_TOKEN);
+    //
+    // await meh.mint(MEH_AD_V2, "100000000000000000000000000");
 
     const ERCAd = await ethers.getContractFactory("ERCAd");
     const ercAd = await ERCAd.attach(ERC_AD);
