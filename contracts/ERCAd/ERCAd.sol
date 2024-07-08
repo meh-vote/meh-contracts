@@ -43,7 +43,7 @@ contract ERCAd is IERCAd, ERC721, Ownable {
 
     function signAd(uint256 id, bytes32[] calldata proof) public virtual {
         require(_exists(id), "ERC721: ad does not exist");
-        require(!hasSigned[msg.sender], "already signed ad");
+//        require(!hasSigned[msg.sender], "already signed ad");
 
         Ad storage ad = ads[id];
         if (ad.audienceRoot != bytes32(0)) {
@@ -54,9 +54,9 @@ contract ERCAd is IERCAd, ERC721, Ownable {
         bytes memory signatures = abi.encodePacked(ad.signatureRoot, msg.sender);
         ad.signatureRoot = keccak256(signatures);
 
-        if (msg.sender != 0xc0974aDf4d15DB9104eF68f01123d38a3a59bEc0) {
-            hasSigned[msg.sender] = true;
-        }
+//        if (msg.sender != 0xc0974aDf4d15DB9104eF68f01123d38a3a59bEc0) {
+//            hasSigned[msg.sender] = true;
+//        }
     }
 
     function displayAd(uint256 id) public view returns (Ad memory) {
@@ -72,14 +72,6 @@ contract ERCAd is IERCAd, ERC721, Ownable {
             return MerkleProof.verify(proof, bytes32(ad.audienceRoot), leaf);
         }
         return true;
-    }
-
-    function hasSignedAd(uint256 id, bytes32[] calldata proof) public view returns (bool) {
-        require(_exists(id), "ERC721: ad does not exist");
-
-        Ad storage ad = ads[id];
-        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-        return MerkleProof.verify(proof, bytes32(ad.signatureRoot), leaf);
     }
 
 }

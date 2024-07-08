@@ -25,11 +25,6 @@ interface IERCAd {
         uint256 id
     ) external view returns (Ad memory);
 
-    function hasSignedAd(
-        uint256 id,
-        bytes32[] calldata proof
-    ) external view returns (bool);
-
     function isInAudience(
         uint256 id,
         bytes32[] calldata proof

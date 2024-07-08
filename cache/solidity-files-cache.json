@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd/ERCAd.sol": {
-      "lastModificationDate": 1720377264268,
-      "contentHash": "ce6f4d477fc0989b647b7a07c15d6924",
+      "lastModificationDate": 1720408232317,
+      "contentHash": "d26ede326be2f4da7eded4c2b3c9a32e",
       "sourceName": "contracts/ERCAd/ERCAd.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -46,8 +46,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/ERCAd/IERCAd.sol": {
-      "lastModificationDate": 1719695109365,
-      "contentHash": "27ec95ce7e01692e11cf81bd43d3ba9f",
+      "lastModificationDate": 1720408144855,
+      "contentHash": "9d582622ee1e12a37987e49c40fbd498",
       "sourceName": "contracts/ERCAd/IERCAd.sol",
       "solcConfig": {
         "version": "0.8.24",
