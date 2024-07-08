@@ -28,7 +28,8 @@ contract MehAdV2 is Ownable {
     event MessageSent(
         bytes32 messageId,
         address sender,
-        uint256 fees
+        uint256 fees,
+        uint256 linkBalance
     );
 
     constructor(
@@ -46,12 +47,10 @@ contract MehAdV2 is Ownable {
     }
 
     function sendMessage(
-        uint64 destinationChainSelector,
-        address receiver,
         CrossChainCapital memory message
     ) public returns (bytes32 messageId) {
         Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({
-            receiver: abi.encode(receiver),
+            receiver: abi.encode(baseContractAddress),
             data: abi.encode(message),
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
@@ -67,7 +66,7 @@ contract MehAdV2 is Ownable {
             evm2AnyMessage
         );
 
-        emit MessageSent(messageId, msg.sender, fees);
+        emit MessageSent(messageId, msg.sender, fees, message.link);
 
         return messageId;
     }
@@ -76,14 +75,14 @@ contract MehAdV2 is Ownable {
         ercAdContract.signAd(id, proof);
 
         uint256 ethBalance = address(this).balance;
-        uint256 linkBalance = linkToken.balanceOf(address(this));
+        uint256 linkBalance = linkToken.balanceOf(msg.sender);
 
         CrossChainCapital memory capital = CrossChainCapital({
             eth: ethBalance,
             link: linkBalance
         });
 
-        sendMessage(destinationChainSelector, baseContractAddress, capital);
+        sendMessage(capital);
     }
 
     function displayAd(uint256 id) external view returns (IERCAd.Ad memory) {

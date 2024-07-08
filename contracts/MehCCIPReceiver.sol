@@ -15,7 +15,8 @@ contract MehCCIPReceiver is CCIPReceiver, Ownable {
 
     event MessageReceived(
         bytes32 messageId,
-        address sender
+        address sender,
+        uint256 linkBalance
     );
 
     struct CrossChainCapital {
@@ -50,7 +51,7 @@ contract MehCCIPReceiver is CCIPReceiver, Ownable {
         }
         mehToken.transfer(msg.sender, amtToTransfer);
 
-        emit MessageReceived(messageId, sender);
+        emit MessageReceived(messageId, sender, message.link);
     }
 
     function withdrawMeh() external onlyOwner {
