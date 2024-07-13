@@ -89,5 +89,10 @@ contract MehAdV2 is Ownable {
         return ercAdContract.displayAd(id);
     }
 
+    function withdrawEth() external onlyOwner {
+        uint256 balance = address(this).balance;
+        payable(owner()).transfer(balance);
+    }
+
     receive() external payable {}
 }

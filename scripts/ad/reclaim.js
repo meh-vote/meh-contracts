@@ -4,22 +4,18 @@ const PUBLIC_KEY = process.env.PUBLIC_KEY;
 const MEH_TOKEN = process.env.MEH_TOKEN;
 const MEH_AD_V1 = process.env.MEH_AD_V1;
 const MEH_AD_V2 = process.env.MEH_AD_V2;
+const MEH_CCIP_RECEIVER = process.env.MEH_CCIP_RECEIVER;
 
-//npx hardhat run scripts/ad/reclaim.js --network mainnet
-//npx hardhat run scripts/ad/reclaim.js --network sepolia
+//npx hardhat run scripts/ad/reclaim.js --network base
+//npx hardhat run scripts/ad/reclaim.js --network basesepolia
 async function main() {
-    // const Meh = await ethers.getContractFactory("Meh");
-    // const meh = await Meh.attach(MEH_TOKEN);
 
-    const MehAd = await ethers.getContractFactory("MehAdV2");
-    const mehAd = await MehAd.attach(MEH_AD_V2);
+    const MehCCIPReceiver = await ethers.getContractFactory("MehCCIPReceiver");
+    const mehCCIPReceiver = await MehCCIPReceiver.attach(MEH_CCIP_RECEIVER);
 
     const [owner] = await ethers.getSigners();
 
-    await mehAd.signAd(
-        1,
-        emptyProof
-    );
+    await mehCCIPReceiver.withdrawMeh();
 
     console.log("done");
 
