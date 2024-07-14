@@ -21,7 +21,7 @@ async function main() {
     mehStoreNFT.approve(MEH_STORE_V1, 0);
 
     await mehStoreV1.refund(
-        2
+        1
     );
 
     

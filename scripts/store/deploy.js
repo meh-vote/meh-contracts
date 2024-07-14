@@ -19,15 +19,15 @@ async function main() {
     const gasPrice = await deployer.getGasPrice();
     console.log(`current gas price: ${gasPrice}`);
 
-    // const MehStoreNFT = await ethers.getContractFactory("MehStoreNFT");
-    // const mehStoreNFT = await MehStoreNFT.deploy();
-    // console.log("mehStoreNFT deployed to address:", mehStoreNFT.address);
+    const MehStoreNFT = await ethers.getContractFactory("MehStoreNFT");
+    const mehStoreNFT = await MehStoreNFT.deploy();
+    console.log("mehStoreNFT deployed to address:", mehStoreNFT.address);
 
     const MehStoreV1 = await ethers.getContractFactory("MehStoreV1");
 
     const mehStoreV1 = await MehStoreV1.deploy(
-        USDC_TOKEN, // link token
-        MEH_STORE_NFT,
+        USDC_TOKEN,
+        mehStoreNFT.address,
     );
     console.log("mehStoreV1 deployed to address:", mehStoreV1.address);
 

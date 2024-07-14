@@ -46,28 +46,6 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
         mehStoreNFT = MehStoreNFT(_mehStoreNFTAddress);
     }
 
-    function addProduct(
-        uint256 price,
-        string memory title,
-        string memory mediaURL
-    ) public onlyOwner {
-        products[nextProductId] = Product(
-            price, 
-            title, 
-            mediaURL,
-            false, 
-            true,
-            new string[](0)
-        );
-        nextProductId++;
-    }
-
-    function deactivateProduct(
-        uint256 productId
-    ) public onlyOwner {
-        products[productId].isActive = false;
-    }
-
     function purchaseProduct(
         uint256 productId, 
         string memory size
@@ -92,9 +70,32 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
         uint256 tokenId = mehStoreNFT.getTokenIdByProductId(productId);
         require(mehStoreNFT.ownerOf(tokenId) == msg.sender, "NFT not deposited");
         uint256 price = mehStoreNFT.getPrice(tokenId);
-        require(usdc.transferFrom(address(this), msg.sender, price), "Refund failed");
+        require(usdc.transfer(msg.sender, price), "Refund failed");
         escrow[productId] -= price;
         mehStoreNFT.burn(tokenId);
+    }
+
+    /// administrative functions
+    function addProduct(
+        uint256 price,
+        string memory title,
+        string memory mediaURL
+    ) public onlyOwner {
+        products[nextProductId] = Product(
+            price, 
+            title, 
+            mediaURL,
+            false, 
+            true,
+            new string[](0)
+        );
+        nextProductId++;
+    }
+
+    function deactivateProduct(
+        uint256 productId
+    ) public onlyOwner {
+        products[productId].isActive = false;
     }
 
     function shipProduct(uint256 productId) public onlyOwner {
@@ -110,5 +111,13 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
     function addProductSize(uint256 productId, string memory newSize) public onlyOwner {
         Product storage product = products[productId];
         product.sizes.push(newSize);
+    }
+
+    function withdrawUSDC(uint256 amount) external onlyOwner {
+        require(amount > 0, "Amount must be greater than zero");
+        uint256 contractBalance = usdc.balanceOf(address(this));
+        require(contractBalance >= amount, "Insufficient USDC balance in contract");
+
+        usdc.transfer(owner(), amount);
     }
 }

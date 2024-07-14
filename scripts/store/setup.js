@@ -26,18 +26,22 @@ async function main() {
     );
 
     await mehStoreV1.addProductSize(
+        0,
         "Small"
     );
 
     await mehStoreV1.addProductSize(
+        0,
         "Medium"
     );
 
     await mehStoreV1.addProductSize(
+        0,
         "Large"
     );
 
     await mehStoreV1.addProductSize(
+        0,
         "X-Large"
     );
 
@@ -47,8 +51,8 @@ async function main() {
         "https://meh.vote/images/vote/id_2.png"
     );
 
-    // const product = await mehStoreV1.products(2);
-    // console.log(product);
+    const product = await mehStoreV1.products(0);
+    console.log(product);
 
     console.log("done")
 

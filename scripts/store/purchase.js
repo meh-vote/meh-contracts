@@ -20,11 +20,15 @@ async function main() {
     await usdc.approve(MEH_STORE_V1, "10000000");
 
     await mehStoreV1.purchaseProduct(
-        2
+        1,
+        ""
     );
 
     
-    console.log("done")
+    // console.log("done");
+
+    const purchase = await mehStoreV1.sales(0);
+    console.log(purchase);
 
 }
 
