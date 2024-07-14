@@ -6,35 +6,40 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MehStoreNFT.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract MehStoreV1 is Ownable {
-    enum Category {
-        Shirt,
-        Hoodie,
-        Hat,
-        Deck,
-        Hair,
-        Jacket,
-        Pants,
-        CyberMask,
-        Digital,
-        Stimulants
-    }
-
+contract MehStoreV1 is Ownable, ReentrancyGuard {
+    
     struct Product {
         uint256 price;
         string title;
-        string description;
         string mediaURL;
-        Category category;
         bool isShipped;
+        bool isActive;
+        string[] sizes;
+    }
+
+    struct Sale {
+        address buyer;
+        uint256 productId;
+        uint256 price;
+        string size;
     }
 
     IERC20 public usdc;
     mapping(uint256 => Product) public products;
     mapping(uint256 => uint256) public escrow;
+    mapping(uint256 => Sale) public sales;
 
     uint256 public nextProductId;
+    uint256 public nextSaleId;
     MehStoreNFT public mehStoreNFT;
+
+    event Purchase(
+        address indexed buyer,
+        uint256 indexed saleId,
+        uint256 indexed productId,
+        uint256 price, 
+        string size
+    );
 
     constructor(IERC20 _usdc, address _mehStoreNFTAddress) {
         usdc = _usdc;
@@ -44,26 +49,50 @@ contract MehStoreV1 is Ownable {
     function addProduct(
         uint256 price,
         string memory title,
-        string memory description,
-        string memory mediaURL,
-        Category category
+        string memory mediaURL
     ) public onlyOwner {
-        products[nextProductId] = Product(price, title, description, mediaURL, category, false);
+        products[nextProductId] = Product(
+            price, 
+            title, 
+            mediaURL,
+            false, 
+            true,
+            new string[](0)
+        );
         nextProductId++;
     }
 
-    function purchaseProduct(uint256 productId) external {
+    function deactivateProduct(
+        uint256 productId
+    ) public onlyOwner {
+        products[productId].isActive = false;
+    }
+
+    function purchaseProduct(
+        uint256 productId, 
+        string memory size
+    ) external nonReentrant {
         Product storage product = products[productId];
+        require(product.isActive, "Product is not active");
         require(usdc.transferFrom(msg.sender, address(this), product.price), "Payment failed");
         escrow[productId] += product.price;
         mehStoreNFT.mint(msg.sender, productId, product.price);
+
+        uint256 saleId = nextSaleId;
+        sales[saleId] = Sale(msg.sender, productId, product.price, size);
+        nextSaleId++;
+
+        emit Purchase(msg.sender, saleId, productId, product.price, size);
     }
 
-    function refund(uint256 productId) external {
+    function refund(uint256 productId) external nonReentrant {
+        Product storage product = products[productId];
+        require(!product.isShipped, "Products in shipping cannot be refunded");
+
         uint256 tokenId = mehStoreNFT.getTokenIdByProductId(productId);
-        require(mehStoreNFT.ownerOf(tokenId) == address(this), "NFT not deposited");
+        require(mehStoreNFT.ownerOf(tokenId) == msg.sender, "NFT not deposited");
         uint256 price = mehStoreNFT.getPrice(tokenId);
-        usdc.transfer(msg.sender, price);
+        require(usdc.transferFrom(address(this), msg.sender, price), "Refund failed");
         escrow[productId] -= price;
         mehStoreNFT.burn(tokenId);
     }
@@ -76,5 +105,10 @@ contract MehStoreV1 is Ownable {
         escrow[productId] = 0;
         //TODO distribute to royalty owners
         usdc.transfer(owner(), price);
+    }
+
+    function addProductSize(uint256 productId, string memory newSize) public onlyOwner {
+        Product storage product = products[productId];
+        product.sizes.push(newSize);
     }
 }

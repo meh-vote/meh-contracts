@@ -11,7 +11,6 @@ const MEH_STORE_NFT = process.env.MEH_STORE_NFT;
 //npx hardhat run scripts/store/setup.js --network base
 async function main() {
 
-
     const MehStoreV1 = await ethers.getContractFactory("MehStoreV1");
     const mehStoreV1 = await MehStoreV1.attach(MEH_STORE_V1);
 
@@ -20,21 +19,33 @@ async function main() {
 
     await mehStoreNFT.setMehStoreV1(MEH_STORE_V1);
 
-    // await mehStoreV1.addProduct(
-    //     "1000000",
-    //     "MEH Shirt 01",
-    //     "Black",
-    //     "https://meh.vote/images/vote/id_1.png",
-    //     0
-    // );
+    await mehStoreV1.addProduct(
+        "1000000",
+        "MEH Shirt 01",
+        "https://meh.vote/images/vote/id_1.png"
+    );
 
-    // await mehStoreV1.addProduct(
-    //     "2000000",
-    //     "MEH Hat 01",
-    //     "Black",
-    //     "https://meh.vote/images/vote/id_2.png",
-    //     2
-    // );
+    await mehStoreV1.addProductSize(
+        "Small"
+    );
+
+    await mehStoreV1.addProductSize(
+        "Medium"
+    );
+
+    await mehStoreV1.addProductSize(
+        "Large"
+    );
+
+    await mehStoreV1.addProductSize(
+        "X-Large"
+    );
+
+    await mehStoreV1.addProduct(
+        "2000000",
+        "MEH Hat 01",
+        "https://meh.vote/images/vote/id_2.png"
+    );
 
     // const product = await mehStoreV1.products(2);
     // console.log(product);
