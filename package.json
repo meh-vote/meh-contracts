@@ -37,6 +37,7 @@
     "hardhat-gas-reporter": "^1.0.6",
     "keccak256": "1.0.6",
     "merkletreejs": "0.2.31",
-    "mocha": "10.2.0"
+    "mocha": "10.2.0",
+    "crypto-js": "^4.1.1"
   }
 }
