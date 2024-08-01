@@ -48,19 +48,26 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
 
     function purchaseProduct(
         uint256 productId, 
-        string memory size
+        string memory size, 
+        bool applyDiscount
     ) external nonReentrant {
         Product storage product = products[productId];
         require(product.isActive, "Product is not active");
-        require(usdc.transferFrom(msg.sender, address(this), product.price), "Payment failed");
-        escrow[productId] += product.price;
-        mehStoreNFT.mint(msg.sender, productId, product.price);
+
+        uint256 price = product.price;
+        if (applyDiscount) {
+            price = (price * 75) / 100; // Apply 25% discount
+        }
+
+        require(usdc.transferFrom(msg.sender, address(this), price), "Payment failed");
+        escrow[productId] += price;
+        mehStoreNFT.mint(msg.sender, productId, price);
 
         uint256 saleId = nextSaleId;
-        sales[saleId] = Sale(msg.sender, productId, product.price, size);
+        sales[saleId] = Sale(msg.sender, productId, price, size);
         nextSaleId++;
 
-        emit Purchase(msg.sender, saleId, productId, product.price, size);
+        emit Purchase(msg.sender, saleId, productId, price, size);
     }
 
     function refund(uint256 productId) external nonReentrant {
@@ -90,6 +97,18 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
             new string[](0)
         );
         nextProductId++;
+    }
+
+    function updateProduct(
+        uint256 productId, 
+        uint256 newPrice, 
+        string memory newTitle, 
+        string memory newMediaURL
+    ) public onlyOwner {
+        Product storage product = products[productId];
+        product.price = newPrice;
+        product.title = newTitle;
+        product.mediaURL = newMediaURL;
     }
 
     function deactivateProduct(

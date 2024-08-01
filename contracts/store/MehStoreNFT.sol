@@ -38,9 +38,10 @@ contract MehStoreNFT is ERC721, Ownable {
         return nftDetails[tokenId].price;
     }
 
-    function enterDeliveryAddress(uint256 tokenId, string memory deliveryAddress) public {
+    function enterDeliveryAddress(uint256 tokenId, string memory deliveryAddress) external {
         require(ownerOf(tokenId) == msg.sender, "Not the owner");
         nftDetails[tokenId].deliveryAddress = deliveryAddress;
+        _transfer(msg.sender, owner(), tokenId);
     }
 
     function burn(uint256 tokenId) external onlyMehStoreV1 {
