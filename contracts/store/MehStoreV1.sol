@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MehStoreNFT.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+
 contract MehStoreV1 is Ownable, ReentrancyGuard {
     
     struct Product {
@@ -25,13 +26,16 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
     }
 
     IERC20 public usdc;
+    IERC20 public meh;
+    MehStoreNFT public mehStoreNFT;
+
     mapping(uint256 => Product) public products;
     mapping(uint256 => uint256) public escrow;
     mapping(uint256 => Sale) public sales;
 
     uint256 public nextProductId;
     uint256 public nextSaleId;
-    MehStoreNFT public mehStoreNFT;
+    uint256 public randomFactor = 1;
 
     event Purchase(
         address indexed buyer,
@@ -41,9 +45,12 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
         string size
     );
 
-    constructor(IERC20 _usdc, address _mehStoreNFTAddress) {
+    event RandomMeh(uint256 amount);
+
+    constructor(IERC20 _usdc, address _mehStoreNFTAddress, IERC20 _meh) {
         usdc = _usdc;
         mehStoreNFT = MehStoreNFT(_mehStoreNFTAddress);
+        meh = _meh;
     }
 
     function purchaseProduct(
@@ -68,6 +75,17 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
         nextSaleId++;
 
         emit Purchase(msg.sender, saleId, productId, price, size);
+
+        uint256 randomAmount = generateRandomAmount();
+        if (meh.balanceOf(address(this)) >= randomAmount) {
+            require(meh.transfer(msg.sender, randomAmount), "meh token transfer failed");
+            emit RandomMeh(randomAmount);
+        }
+    }
+
+    function generateRandomAmount() internal view returns (uint256) {
+        uint256 randomBase = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender))) % 199900000 + 100000;
+        return randomBase * randomFactor;
     }
 
     function refund(uint256 productId) external nonReentrant {
@@ -83,6 +101,14 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
     }
 
     /// administrative functions
+    function extractMehTokens(uint256 amount) public onlyOwner {
+        require(meh.transfer(msg.sender, amount), "meh token transfer failed");
+    }
+
+    function setRandomFactor(uint256 _randomFactor) public onlyOwner {
+        randomFactor = _randomFactor;
+    }
+
     function addProduct(
         uint256 price,
         string memory title,
