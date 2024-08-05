@@ -28,7 +28,7 @@ async function main() {
         encrypted
     );
 
-    const details = await mehStoreNFT.nftDetails(0);
+    const details = await mehStoreNFT.getNFTDetails(0);
     console.log(details);
 
     const bytes = CryptoJS.AES.decrypt(details.deliveryAddress, secretKey);

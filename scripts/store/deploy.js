@@ -28,6 +28,8 @@ async function main() {
     const mehStoreV1 = await MehStoreV1.deploy(
         USDC_TOKEN,
         mehStoreNFT.address,
+        MEH_TOKEN
+
     );
     console.log("mehStoreV1 deployed to address:", mehStoreV1.address);
 

@@ -21,7 +21,8 @@ async function main() {
 
     await mehStoreV1.purchaseProduct(
         1,
-        ""
+        "",
+        false
     );
 
     
