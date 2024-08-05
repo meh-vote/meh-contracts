@@ -33,6 +33,11 @@ contract MehStoreNFT is ERC721, Ownable {
         return productToToken[productId];
     }
 
+    function getNFTDetailsByTokenId(uint256 tokenId) public view returns (uint256 productId, uint256 price) {
+        NFTDetails memory details = nftDetails[tokenId];
+        return (details.productId, details.price);
+    }
+
     // meh.store functions
     function mint(address to, uint256 productId, uint256 price) external onlyMehStoreV1 {
         uint256 tokenId = nextTokenId++;
