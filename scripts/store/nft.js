@@ -12,7 +12,7 @@ const CryptoJS = require('crypto-js');
 //npx hardhat run scripts/store/nft.js --network base
 async function main() {
 
-    const address = '1347 Skyline Dr, Winona MN 55987';
+    const address = '123 Main St, Bozeman MT 88888';
     const secretKey = 'that-gum-you-like-is-coming-back-in-style';
 
     const encrypted = CryptoJS.AES.encrypt(address, secretKey).toString();

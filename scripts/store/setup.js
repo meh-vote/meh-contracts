@@ -51,7 +51,7 @@ async function main() {
         "X-Large"
     );
 
-    const product = await mehStoreV1.products(0);
+    let product = await mehStoreV1.products(0);
     console.log(product);
     await sleep(1000);
 

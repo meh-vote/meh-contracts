@@ -84,8 +84,8 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
     }
 
     function generateRandomAmount() internal view returns (uint256) {
-        uint256 randomBase = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender))) % 199900000000000000000000000 + 100000000000000000000000;
-        return randomBase * (randomFactor / 100);
+        uint256 randomBase = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender))) % 1800000e18 + 200000e18;
+        return randomBase;
     }
 
     function refund(uint256 productId) external nonReentrant {

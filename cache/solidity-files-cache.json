@@ -894,8 +894,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/store/MehStoreV1.sol": {
-      "lastModificationDate": 1722722594882,
-      "contentHash": "327524633b79bb96cbb65cee7bd91516",
+      "lastModificationDate": 1723414706454,
+      "contentHash": "6f900e047bb52aec001cc1396cef68c8",
       "sourceName": "contracts/store/MehStoreV1.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -936,8 +936,8 @@
       ]
     },
     "/Users/houseofhufflepuff/Development/meh-contracts/contracts/store/MehStoreNFT.sol": {
-      "lastModificationDate": 1722795727316,
-      "contentHash": "f5b25ab705e1ddd606e08516af5e414b",
+      "lastModificationDate": 1722832703499,
+      "contentHash": "4f16d66c93e69ccbef96c0c4a49bdc8d",
       "sourceName": "contracts/store/MehStoreNFT.sol",
       "solcConfig": {
         "version": "0.8.24",

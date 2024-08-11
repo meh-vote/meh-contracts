@@ -29,7 +29,6 @@ async function main() {
         USDC_TOKEN,
         mehStoreNFT.address,
         MEH_TOKEN
-
     );
     console.log("mehStoreV1 deployed to address:", mehStoreV1.address);
 
