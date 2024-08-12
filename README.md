@@ -20,6 +20,8 @@ npx hardhat verify --network base 0xa999542c71FEbba77602fBc2F784bA9BA0C850F6
 
 npx hardhat verify --network basesepolia --constructor-args scripts/verify/meh-faucet-v1-args.js 0xEf4C3545edf08563bbC112D5CEf0A10B396Ea12E
 
+npx hardhat verify --network base --constructor-args scripts/verify/meh-store-v1-args.js 0xFD6aF32884C7E79Fd26b4D1e8017D5D79B9266D9
+
 ```
 
 ## deploy ccip

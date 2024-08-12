@@ -6,27 +6,21 @@ const MEH_STORE_V1 = process.env.MEH_STORE_V1;
 const MEH_STORE_NFT = process.env.MEH_STORE_NFT;
 
 
+const CryptoJS = require('crypto-js');
 
-//npx hardhat run scripts/store/extract.js --network basesepolia
-//npx hardhat run scripts/store/extract.js --network base
+//npx hardhat run scripts/store/nft-address.js --network basesepolia
+//npx hardhat run scripts/store/nft-address.js --network base
 async function main() {
-
-    const MehStoreV1 = await ethers.getContractFactory("MehStoreV1");
-    const mehStoreV1 = await MehStoreV1.attach(MEH_STORE_V1);
-
     const MehStoreNFT = await ethers.getContractFactory("MehStoreNFT");
     const mehStoreNFT = await MehStoreNFT.attach(MEH_STORE_NFT);
 
+    const details = await mehStoreNFT.getNFTDetails(2);
+    console.log(details);
 
-    await mehStoreV1.extractUSDC(
-        "83880000"
-    );
+    // const bytes = CryptoJS.AES.decrypt(details.deliveryAddress, secretKey);
+    // const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
 
-    // await mehStoreV1.extractMehTokens(
-    //     "200000000000000000000000000"
-    // );
-
-    console.log("done")
+    // console.log(decryptedString);
 
 }
 

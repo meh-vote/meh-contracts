@@ -50,7 +50,7 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: "1EE4Q45Y7PT97X1AR321WIUW6U9WZEMSUW",
+    apiKey: "CVCXCX6C1I5AAE4RETWE79G63FU8G8VR39",
     apiURL: "https://api.basescan.org/api",
     customChains: [
       {
