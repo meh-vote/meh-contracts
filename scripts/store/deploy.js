@@ -7,7 +7,7 @@ const USDC_TOKEN = process.env.USDC_TOKEN;
 
 
 //npx hardhat run scripts/store/deploy.js --network basesepolia
-//npx hardhat run scripts/ad/deploy.js --network base
+//npx hardhat run scripts/store/deploy.js --network base
 async function main() {
     const [deployer] = await ethers.getSigners();
 

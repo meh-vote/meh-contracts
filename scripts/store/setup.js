@@ -22,12 +22,13 @@ async function main() {
 
     await mehStoreNFT.setMehStoreV1(MEH_STORE_V1);
 
-    await meh.mint(MEH_STORE_V1, "50000000000000000000000000"); // 500M
-    console.log("mint done");
+    // await meh.mint(MEH_STORE_V1, "50000000000000000000000000"); // 500M
+    // console.log("mint done");
 
+    // product 0
     await mehStoreV1.addProduct(
-        "1000000",
-        "MEH Shirt 01",
+        "42000000", // 42 USDC
+        "MEH Shirt 01 Embroidered",
         "https://meh.store/images/meh.png"
     );
 
@@ -57,7 +58,7 @@ async function main() {
 
     // product 1
     await mehStoreV1.addProduct(
-        "2000000",
+        "42000000", //42
         "MEH Eco Trucker Hat Embroidered",
         "https://meh.store/images/meh.png"
     );
@@ -66,11 +67,10 @@ async function main() {
     console.log(product);
     await sleep(1000);
 
-
     // product 2
     await mehStoreV1.addProduct(
-        "100000000", // 100 USDC
-        "MEH ERC-721 Black Hoodie",
+        "35000000", //35
+        "MEH Shirt 01",
         "https://meh.store/images/meh.png"
     );
 
@@ -100,40 +100,41 @@ async function main() {
 
     // product 3
     await mehStoreV1.addProduct(
-        "40000000", // 40 USDC
-        "MEH Shirt 01 Embroidered",
+        "35000000", //35
+        "MEH Eco Trucker Hat",
         "https://meh.store/images/meh.png"
-    );
-
-    await mehStoreV1.addProductSize(
-        3,
-        "Small"
-    );
-
-    await mehStoreV1.addProductSize(
-        3,
-        "Medium"
-    );
-
-    await mehStoreV1.addProductSize(
-        3,
-        "Large"
-    );
-
-    await mehStoreV1.addProductSize(
-        3,
-        "X-Large"
     );
 
     product = await mehStoreV1.products(3);
     console.log(product);
     await sleep(1000);
 
+
     // product 4
     await mehStoreV1.addProduct(
-        "40000000", // 40 USDC
-        "MEH Eco Trucker Hat Embroidered",
+        "78000000", // 78 USDC
+        "MEH ERC-721 Black Hoodie",
         "https://meh.store/images/meh.png"
+    );
+
+    await mehStoreV1.addProductSize(
+        4,
+        "Small"
+    );
+
+    await mehStoreV1.addProductSize(
+        4,
+        "Medium"
+    );
+
+    await mehStoreV1.addProductSize(
+        4,
+        "Large"
+    );
+
+    await mehStoreV1.addProductSize(
+        4,
+        "X-Large"
     );
 
     product = await mehStoreV1.products(4);
@@ -142,7 +143,7 @@ async function main() {
 
     // product 5
     await mehStoreV1.addProduct(
-        "125000000", // 125 USDC
+        "78000000", // 78 USDC
         "MEH Heritage Pullover Hoodie",
         "https://meh.store/images/meh.png"
     );
@@ -167,7 +168,7 @@ async function main() {
         "X-Large"
     );
 
-    product = await mehStoreV1.products(5);
+    product = await mehStoreV1.products(4);
     console.log(product);
     await sleep(1000);
 

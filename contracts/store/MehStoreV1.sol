@@ -101,14 +101,6 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
     }
 
     /// administrative functions
-    function extractMehTokens(uint256 amount) public onlyOwner {
-        require(meh.transfer(msg.sender, amount), "meh token transfer failed");
-    }
-
-    function setRandomFactor(uint256 _randomFactor) public onlyOwner {
-        randomFactor = _randomFactor;
-    }
-
     function addProduct(
         uint256 price,
         string memory title,
@@ -158,11 +150,15 @@ contract MehStoreV1 is Ownable, ReentrancyGuard {
         product.sizes.push(newSize);
     }
 
-    function withdrawUSDC(uint256 amount) external onlyOwner {
+    function extractUSDC(uint256 amount) external onlyOwner {
         require(amount > 0, "Amount must be greater than zero");
         uint256 contractBalance = usdc.balanceOf(address(this));
         require(contractBalance >= amount, "Insufficient USDC balance in contract");
 
         usdc.transfer(owner(), amount);
+    }
+
+    function extractMehTokens(uint256 amount) public onlyOwner {
+        require(meh.transfer(msg.sender, amount), "meh token transfer failed");
     }
 }

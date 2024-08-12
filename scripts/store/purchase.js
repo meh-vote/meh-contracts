@@ -17,10 +17,10 @@ async function main() {
     const USDC = await ethers.getContractFactory("ERC20");
     const usdc = await USDC.attach(USDC_TOKEN);
 
-    await usdc.approve(MEH_STORE_V1, "10000000");
+    await usdc.approve(MEH_STORE_V1, "42000000");
 
     await mehStoreV1.purchaseProduct(
-        1,
+        0,
         "",
         false
     );
